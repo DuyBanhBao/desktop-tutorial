@@ -1,0 +1,133 @@
+body {
+  background-color: var(--color-white);
+  color: var(--color-text);
+}
+
+.home-title {
+  font-size: 36px;
+  font-weight: 700;
+}
+
+.home-section-title {
+  color: var(--color-primary);
+  font-size: 24px;
+  font-weight: 600;
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.home-container {
+  max-width: var(--container-width);
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.home-banner {
+  position: relative;
+  width: 100%;
+  height: 500px;
+  overflow: hidden;
+  background-color: var(--color-black);
+}
+
+.home-slide {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  transition: opacity 1s ease-in-out;
+}
+
+.home-slide.active {
+  opacity: 1;
+}
+
+.home-slide__image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.home-slide__content {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 80%;
+  max-width: 900px;
+  padding: 30px 40px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: var(--radius-xl);
+  background: rgba(0, 0, 0, 0.55);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(4px);
+  color: var(--color-white);
+  text-align: center;
+  transform: translate(-50%, -50%);
+}
+
+.home-intro {
+  padding: 60px 0;
+  background-color: var(--color-white);
+}
+
+.home-intro__grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 30px;
+}
+
+.home-intro-card {
+  padding: 25px;
+  border: 2px solid var(--color-primary);
+  border-radius: var(--radius-md);
+  background-color: var(--color-white);
+  box-shadow: 0 4px 10px rgba(14, 165, 233, 0.1);
+  transition: transform var(--transition-base);
+}
+
+.home-intro-card:hover {
+  transform: translateY(-5px);
+}
+
+.home-intro-card__title {
+  color: var(--color-primary);
+  font-size: 20px;
+  margin-bottom: 15px;
+}
+
+.home-intro-card__text {
+  color: var(--color-text-soft);
+  text-align: justify;
+}
+
+@media (max-width: 768px) {
+  .home-banner {
+    height: 300px;
+  }
+
+  .home-slide__content {
+    width: 90%;
+    padding: 25px 25px;
+  }
+
+  .home-title {
+    font-size: 24px;
+  }
+
+  .home-intro__grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .home-slide__content {
+    width: 95%;
+    padding: 20px 15px;
+  }
+
+  .home-title {
+    font-size: 20px;
+  }
+}

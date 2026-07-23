@@ -1,0 +1,154 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Đăng ký tài khoản du lịch Cần Thơ để lưu hành trình và địa điểm yêu thích.">
+
+    <title>Đăng ký - Du lịch Cần Thơ</title>
+
+    <link rel="icon" type="image/png" href="image/favicon.jpg">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="auth.css">
+    <link rel="stylesheet" href="register.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+</head>
+
+<body class="register-page">
+    <!--NAVBAR-->
+    <header class="navbar">
+      <div class="logo">
+        <span class="logo__text">CanTho Travel</span>
+      </div>
+      <nav class="menu" aria-label="Điều hướng chính">
+        <ul>
+          <li><a href="../home/index.html">Trang Chủ</a></li>
+          <li><a href="../khampha/dulich.html">Khám Phá</a></li>
+          <li><a href="../amthuc/amthuc.html">Ẩm Thực</a></li>
+          <li><a href="../lichtrinh/lichtrinh.html">Lịch Trình</a></li>
+          <li><a href="../luutru/luutru.html">Lưu Trú</a></li>
+          <li><a href="../login/register.html" class="active">Đăng Ký</a></li>
+        </ul>
+      </nav>
+    </header>
+<section class="hero hero--register" aria-labelledby="register-hero-title">
+        <div class="hero__content">
+            <h1 class="hero__title" id="register-hero-title">Đăng ký tài khoản</h1>
+            <p class="hero__text">
+                Tạo tài khoản để khám phá nhiều địa điểm hấp dẫn<br>
+                và lưu lại hành trình du lịch Cần Thơ của bạn.
+            </p>
+        </div>
+    </section>
+
+    <main class="register-main">
+        <section class="register-card" aria-labelledby="register-form-title">
+            <div class="register-card__avatar" aria-hidden="true">
+                <i class="fa-solid fa-user-circle"></i>
+            </div>
+
+            <h2 class="register-card__title" id="register-form-title">Đăng ký</h2>
+
+            <form class="register-form" id="register-form" novalidate>
+                <div class="register-form__group">
+                    <label class="register-form__label" for="fullname">Họ và tên</label>
+                    <div class="register-form__field">
+                        <i class="fa-solid fa-user register-form__icon" aria-hidden="true"></i>
+                        <input class="register-form__input" type="text" id="fullname" name="fullname" placeholder="Nhập họ và tên" autocomplete="name" aria-describedby="fullname-error">
+                    </div>
+                    <p class="register-form__error" id="fullname-error" aria-live="polite"></p>
+                </div>
+
+                <div class="register-form__group">
+                    <label class="register-form__label" for="email">Email</label>
+                    <div class="register-form__field">
+                        <i class="fa-solid fa-envelope register-form__icon" aria-hidden="true"></i>
+                        <input class="register-form__input" type="email" id="email" name="email" placeholder="example@gmail.com" autocomplete="email" aria-describedby="email-error">
+                    </div>
+                    <p class="register-form__error" id="email-error" aria-live="polite"></p>
+                </div>
+
+                <div class="register-form__group">
+                    <label class="register-form__label" for="phone">Số điện thoại</label>
+                    <div class="register-form__field">
+                        <i class="fa-solid fa-phone register-form__icon" aria-hidden="true"></i>
+                        <input class="register-form__input" type="tel" id="phone" name="phone" placeholder="09xxxxxxxx" inputmode="numeric" autocomplete="tel" maxlength="10" aria-describedby="phone-error">
+                    </div>
+                    <p class="register-form__error" id="phone-error" aria-live="polite"></p>
+                </div>
+
+                <div class="register-form__group">
+                    <label class="register-form__label" for="password">Mật khẩu</label>
+                    <div class="register-form__field">
+                        <i class="fa-solid fa-lock register-form__icon" aria-hidden="true"></i>
+                        <input class="register-form__input register-form__input--password" type="password" id="password" name="password" placeholder="Nhập mật khẩu" autocomplete="new-password" aria-describedby="password-error">
+                        <button class="register-form__toggle" type="button" aria-label="Hiện mật khẩu" data-password-toggle="password">
+                            <i class="fa-solid fa-eye" aria-hidden="true"></i>
+                        </button>
+                    </div>
+                    <p class="register-form__error" id="password-error" aria-live="polite"></p>
+                </div>
+
+                <div class="register-form__group">
+                    <label class="register-form__label" for="confirm-password">Xác nhận mật khẩu</label>
+                    <div class="register-form__field">
+                        <i class="fa-solid fa-lock register-form__icon" aria-hidden="true"></i>
+                        <input class="register-form__input register-form__input--password" type="password" id="confirm-password" name="confirmPassword" placeholder="Nhập lại mật khẩu" autocomplete="new-password" aria-describedby="confirm-password-error">
+                        <button class="register-form__toggle" type="button" aria-label="Hiện mật khẩu xác nhận" data-password-toggle="confirm-password">
+                            <i class="fa-solid fa-eye" aria-hidden="true"></i>
+                        </button>
+                    </div>
+                    <p class="register-form__error" id="confirm-password-error" aria-live="polite"></p>
+                </div>
+
+                <div class="register-form__terms">
+                    <label class="register-form__check" for="terms">
+                        <input type="checkbox" id="terms" name="terms" aria-describedby="terms-error">
+                        <span>Tôi đồng ý với <a class="register-form__link" href="#">Điều khoản sử dụng</a>.</span>
+                    </label>
+                    <p class="register-form__error register-form__error--check" id="terms-error" aria-live="polite"></p>
+                </div>
+
+                <button class="register-form__submit" type="submit">
+                    <span class="register-form__spinner" aria-hidden="true"></span>
+                    <span class="register-form__submit-text">ĐĂNG KÝ</span>
+                </button>
+
+                <p class="register-form__login">
+                    Đã có tài khoản?<br>
+                    <a class="register-form__link" href="login.html">Đăng nhập ngay</a>
+                </p>
+            </form>
+        </section>
+    </main>
+
+    <div class="register-toast" role="status" aria-live="polite" aria-atomic="true" data-toast>
+        Đăng ký thành công!
+    </div>
+    <!--FOOTER -->
+    <footer class="footer">
+      <div class="footer-content">
+        <div class="footer-brand">
+          <h2>CanTho Travel</h2>
+          <p>Hành trình khám phá vẻ đẹp Tây Đô.</p>
+        </div>
+        <div class="footer-contact">
+          <h3>Thông Tin Liên Hệ</h3>
+          <p>Email: nhom4@gmail.com</p>
+          <p>SĐT: 0123456789</p>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>@ 2026 nhom 4</p>
+      </div>
+    </footer>
+<script src="../js/main.js"></script>
+<script src="register.js"></script>
+</body>
+</html>
+
+
+
+
+

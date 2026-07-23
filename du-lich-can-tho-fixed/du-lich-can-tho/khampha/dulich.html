@@ -1,0 +1,229 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Địa Điểm Du Lịch - Du Lịch Cần Thơ</title>
+
+    <link rel="icon" type="image/png" href="image/favicon.jpg">
+    <link rel="stylesheet" href="../css/style.css" />
+    <link rel="stylesheet" href="css/diadiem.css" />
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+  </head>
+
+  <body>
+    <!--NAVBAR-->
+    <header class="navbar">
+      <div class="logo">
+        <span class="logo__text">CanTho Travel</span>
+      </div>
+      <nav class="menu" aria-label="Điều hướng chính">
+        <ul>
+          <li><a href="../home/index.html">Trang Chủ</a></li>
+          <li><a href="../khampha/dulich.html" class="active">Khám Phá</a></li>
+          <li><a href="../amthuc/amthuc.html">Ẩm Thực</a></li>
+          <li><a href="../lichtrinh/lichtrinh.html">Lịch Trình</a></li>
+          <li><a href="../luutru/luutru.html">Lưu Trú</a></li>
+          <li><a href="../login/login.html">Đăng Nhập</a></li>
+        </ul>
+      </nav>
+    </header>
+<section
+      class="hero hero--destination"
+      style="background-image: url(&quot;image/background.jpg&quot;)"
+    >
+      <div class="hero__content">
+        <h1 class="hero__title">ĐỊA ĐIỂM DU LỊCH CẦN THƠ</h1>
+        <p class="hero__text">
+          Khám phá những điểm đến nổi bật, mang đậm bản sắc sông nước miền Tây
+          tại thành phố Cần Thơ.
+        </p>
+      </div>
+    </section>
+
+    <main class="page-container">
+      <section aria-labelledby="destination-title">
+        <h2
+          class="section-title khampha-section-title"
+          id="destination-title"
+        >
+          Điểm Đến Nổi Bật
+        </h2>
+
+        <div class="khampha-search">
+          <label class="visually-hidden" for="destinationSearch">Tìm kiếm địa điểm</label>
+          <input
+            type="text"
+            id="destinationSearch"
+            class="khampha-search__input"
+            placeholder="Tìm kiếm địa điểm (vd: chợ nổi, nhà cổ...)"
+          />
+          <button
+            type="button"
+            class="khampha-search__button"
+          >
+            Tìm kiếm
+          </button>
+        </div>
+
+        <p class="khampha-search__no-result" id="noResultText">
+          Không tìm thấy địa điểm phù hợp.
+        </p>
+
+        <div class="listing-grid" id="destinationGrid">
+          <a
+            class="listing-card khampha-card"
+            href="benninhkieu.html"
+            data-name="bến ninh kiều"
+          >
+            <img
+              class="listing-card__image"
+              src="image/ben-ninh-kieu-avt.webp"
+              alt="Bến Ninh Kiều"
+              loading="lazy"
+            />
+            <div class="listing-card__content">
+              <h3 class="listing-card__title">Bến Ninh Kiều</h3>
+              <p class="listing-card__text">
+                Biểu tượng du lịch của thành phố Cần Thơ, nơi du khách có thể
+                dạo bộ ngắm sông Hậu, chiêm ngưỡng tượng đài Bác Hồ và tận hưởng
+                không khí sông nước về đêm.
+              </p>
+              <p class="listing-card__text">
+                <strong>Địa chỉ:</strong> Phường Tân An, Quận Ninh Kiều, Cần Thơ
+              </p>
+            </div>
+          </a>
+
+          <a
+            class="listing-card khampha-card"
+            href="chonoicairang.html"
+            data-name="chợ nổi cái răng"
+          >
+            <img
+              class="listing-card__image"
+              src="image/cho-noi-cai-rang-avt.jpg"
+              alt="Chợ Nổi Cái Răng"
+              loading="lazy"
+            />
+            <div class="listing-card__content">
+              <h3 class="listing-card__title">Chợ Nổi Cái Răng</h3>
+              <p class="listing-card__text">
+                Khu chợ nổi lớn và nhộn nhịp nhất miền Tây Nam Bộ, nơi mua bán
+                nông sản trên sông diễn ra từ sáng sớm, mang đậm nét văn hóa
+                sông nước đặc trưng.
+              </p>
+              <p class="listing-card__text">
+                <strong>Địa chỉ:</strong> Quận Cái Răng, Thành phố Cần Thơ
+              </p>
+            </div>
+          </a>
+
+          <a
+            class="listing-card khampha-card"
+            href="nhacobinhthuy.html"
+            data-name="nhà cổ bình thủy"
+          >
+            <img
+              class="listing-card__image"
+              src="image/nha-co-binh-thuy-avt.webp"
+              alt="Nhà Cổ Bình Thủy"
+              loading="lazy"
+            />
+            <div class="listing-card__content">
+              <h3 class="listing-card__title">Nhà Cổ Bình Thủy</h3>
+              <p class="listing-card__text">
+                Công trình kiến trúc cổ hơn 100 năm tuổi, kết hợp hài hòa giữa
+                phong cách Đông - Tây, từng là bối cảnh quay nhiều bộ phim nổi
+                tiếng.
+              </p>
+              <p class="listing-card__text">
+                <strong>Địa chỉ:</strong> Quận Bình Thủy, Thành phố Cần Thơ
+              </p>
+            </div>
+          </a>
+
+          <a
+            class="listing-card khampha-card"
+            href="khudulichmykhanh.html"
+            data-name="làng du lịch mỹ khánh"
+          >
+            <img
+              class="listing-card__image"
+              src="image/khu-du-lich-my-khanh-avt.jpg"
+              alt="Làng Du Lịch Mỹ Khánh"
+              loading="lazy"
+            />
+            <div class="listing-card__content">
+              <h3 class="listing-card__title">Làng Du Lịch Mỹ Khánh</h3>
+              <p class="listing-card__text">
+                Khu du lịch sinh thái miệt vườn rộng lớn với nhiều hoạt động
+                trải nghiệm như tát mương bắt cá, đua heo, xem đờn ca tài tử.
+              </p>
+              <p class="listing-card__text">
+                <strong>Địa chỉ:</strong> Huyện Phong Điền, Thành phố Cần Thơ
+              </p>
+            </div>
+          </a>
+
+          <a
+            class="listing-card khampha-card"
+            href="conson.html"
+            data-name="cồn sơn"
+          >
+            <img
+              class="listing-card__image"
+              src="image/con-son-avt.jpg"
+              alt="Cồn Sơn"
+              loading="lazy"
+            />
+            <div class="listing-card__content">
+              <h3 class="listing-card__title">Cồn Sơn</h3>
+              <p class="listing-card__text">
+                Cù lao xanh mát giữa sông Hậu, nổi tiếng với mô hình du lịch
+                cộng đồng, vườn trái cây và trải nghiệm cá lóc bay độc đáo.
+              </p>
+              <p class="listing-card__text">
+                <strong>Địa chỉ:</strong> Quận Bình Thủy, Thành phố Cần Thơ
+              </p>
+            </div>
+          </a>
+        </div>
+      </section>
+    </main>
+    <!--FOOTER -->
+    <footer class="footer">
+      <div class="footer-content">
+        <div class="footer-brand">
+          <h2>CanTho Travel</h2>
+          <p>Hành trình khám phá vẻ đẹp Tây Đô.</p>
+        </div>
+        <div class="footer-contact">
+          <h3>Thông Tin Liên Hệ</h3>
+          <p>Email: nhom4@gmail.com</p>
+          <p>SĐT: 0123456789</p>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>@ 2026 nhom 4</p>
+      </div>
+    </footer>
+<button
+      class="button button--back-to-top"
+      type="button"
+      aria-label="Quay lại đầu trang"
+      data-back-to-top
+    >
+      ↑
+    </button>
+
+    <script src="../js/main.js"></script>
+<script src="dulich.js"></script>
+</body>
+</html>

@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lịch trình Du lịch Cần Thơ</title>
+    <link rel="icon" type="image/png" href="image/favicon.jpg">
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="lichtrinh.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!--NAVBAR-->
+    <header class="navbar">
+      <div class="logo">
+        <span class="logo__text">CanTho Travel</span>
+      </div>
+      <nav class="menu" aria-label="Điều hướng chính">
+        <ul>
+          <li><a href="../home/index.html">Trang Chủ</a></li>
+          <li><a href="../khampha/dulich.html">Khám Phá</a></li>
+          <li><a href="../amthuc/amthuc.html">Ẩm Thực</a></li>
+          <li><a href="../lichtrinh/lichtrinh.html" class="active">Lịch Trình</a></li>
+          <li><a href="../luutru/luutru.html">Lưu Trú</a></li>
+          <li><a href="../login/login.html">Đăng Nhập</a></li>
+        </ul>
+      </nav>
+    </header>
+  <!-- Hero -->
+  <section class="hero lichtrinh-hero" style="background-image:url('image/background-lichtrinh.jpg')">
+    <div class="hero__content">
+      <h1 class="hero__title">Danh sách Tour Cần Thơ</h1>
+      <p class="hero__text">Các tour hấp dẫn, trải nghiệm văn hóa miền Tây.</p>
+    </div>
+  </section>
+
+  <!-- Nút Quay về trang chủ -->
+  <div class="page-container">
+</div>
+
+  <!-- Intro -->
+  <section class="lichtrinh-intro">
+    <h2 class="section-title lichtrinh-intro__title">Khám phá Cần Thơ qua các tour đặc sắc</h2>
+    <p>Trải nghiệm văn hóa miền Tây, tham quan chợ nổi, miệt vườn, và nhiều điểm đến hấp dẫn. 
+       Các tour được thiết kế phù hợp cho cả du khách trong và ngoài nước.</p>
+  </section>
+
+  <!-- Bộ lọc -->
+  <section class="lichtrinh-filter">
+    <label class="visually-hidden" for="search">Tìm kiếm tour</label>
+    <input class="lichtrinh-filter__input" type="text" id="search" placeholder="Tìm kiếm tour...">
+    <label class="visually-hidden" for="durationFilter">Chọn số ngày</label>
+    <select class="lichtrinh-filter__select" id="durationFilter">
+      <option value="">-- Chọn số ngày --</option>
+      <option value="1">1 ngày</option>
+      <option value="2">2 ngày</option>
+    </select>
+    <label class="visually-hidden" for="sortFilter">Sắp xếp tour</label>
+    <select class="lichtrinh-filter__select" id="sortFilter">
+      <option value="">-- Sắp xếp --</option>
+      <option value="priceAsc">Giá tăng dần</option>
+      <option value="priceDesc">Giá giảm dần</option>
+    </select>
+    <button class="button button--primary lichtrinh-filter__button" id="filterBtn" type="button">Tìm kiếm</button>
+  </section>
+
+
+  <!-- Preview Tour -->
+  <section class="tour-preview">
+    <div class="card tour-card" data-target="tour1" data-duration="2" data-price="1200000">
+      <div class="card__body tour-card__body">
+        <h3 class="card__title">Tour 2 ngày: Nghỉ Homestay</h3>
+        <img class="card__image tour-card__image" src="image/tour-1.jpg" alt="Tour 2 ngày Homestay" loading="lazy">
+        <p class="card__text tour-card__text">Khám phá chợ nổi, miệt vườn, nghỉ dưỡng sinh thái.</p>
+        <span>Thời gian: 2 ngày</span>
+        <span>Giá: 1.200.000 VNĐ/người</span>
+        <button class="button button--outline btn-detail" type="button">Xem chi tiết</button>
+        <button class="button button--primary btn-add-journey" type="button">Thêm vào hành trình</button>
+      </div>
+    </div>
+
+    <section class="timeline-hidden timeline" id="tour1" data-duration="2">
+      <div class="timeline-header-box">
+        <h2>Tour 2 ngày: Nghỉ Homestay</h2>
+        <button class="button button--outline btn-close-timeline" type="button">Đóng</button>
+      </div>
+      <h3>Ngày 1 · 6 địa điểm</h3>
+      <div class="timeline-item"><span class="timeline-item__time">06:00</span><div class="timeline-item__detail"><img src="image/cho-noi.jpg" alt="Chợ nổi Cái Răng trong lịch trình tour" loading="lazy"><div><strong>Chợ nổi Cái Răng</strong><p>
+              Top 10 chợ ấn tượng nhất thế giới.<br>
+              Địa chỉ: P. Cái Răng, TP. Cần Thơ</p></div></div></div>
+      <div class="timeline-item"><span class="timeline-item__time">08:00</span><div class="timeline-item__detail"><img src="image/lotte-mart.jpg" alt="Lotte Mart Cần Thơ trong lịch trình tour" loading="lazy"><div><strong>Lotte Mart Cần Thơ</strong><p>
+              Trung tâm thương mại lớn, có rạp chiếu phim.<br>
+              Địa chỉ: 84 Mậu Thân, P. Cái Khế</p></div></div></div>
+      <div class="timeline-item"><span class="timeline-item__time">08:30</span><div class="timeline-item__detail"><img src="image/hu-tieu.jpg" alt="Làng nghề hủ tiếu Phong Điền" loading="lazy"><div><strong>Làng nghề hủ tiếu Phong Điền</strong><p>
+              Trải nghiệm quy trình làm hủ tiếu truyền thống.<br>
+              Địa chỉ: Mỹ Khánh, P. An Bình</p></div></div></div>
+      <div class="timeline-item"><span class="timeline-item__time">09:30</span><div class="timeline-item__detail"><img src="image/thien-vien.jpg" alt="Thiền viện Trúc Lâm Phương Nam" loading="lazy"><div><strong>Thiền viện Trúc Lâm Phương Nam</strong><p>
+              Ngôi chùa lớn, kiến trúc truyền thống.<br>
+              Địa chỉ: Đường Mỹ Nhơn, P. An Bình</p></div></div></div>
+      <div class="timeline-item"><span class="timeline-item__time">10:30</span><div class="timeline-item__detail"><img src="image/lang-ong-de.jpg" alt="Làng du lịch Ông Đề" loading="lazy"><div><strong>Làng du lịch Ông Đề</strong><p>
+              Khu du lịch sinh thái miệt vườn.<br>
+              Địa chỉ: 26 Ấp Mỹ Ái, P. An Bình</p></div></div></div>
+      <div class="timeline-item"><span class="timeline-item__time">14:30</span><div class="timeline-item__detail"><img src="image/hieus-cottage.jpg" alt="Khu nghỉ dưỡng Hieu's Cottage" loading="lazy"><div><strong>Hieu's Cottage</strong><p>
+              Khu nghỉ dưỡng sinh thái độc đáo.<br>
+              Địa chỉ: 02 Ấp Nhơn Lộc, Xã Nhơn Ái</p></div></div></div>
+      <h3>Ngày 2 · 4 địa điểm</h3>
+      <div class="timeline-item"><span class="timeline-item__time">09:00</span><div class="timeline-item__detail"><img src="image/ben-ninh-kieu.jpg" alt="Bến Ninh Kiều bên sông Hậu" loading="lazy"><div><strong>Bến Ninh Kiều</strong><p>
+              Biểu tượng nổi tiếng của Cần Thơ.<br>
+              Địa chỉ: P. Ninh Kiều</p></div></div></div>
+      <div class="timeline-item"><span class="timeline-item__time">09:30</span><div class="timeline-item__detail"><img src="image/cau-di-bo.jpg" alt="Cầu đi bộ Ninh Kiều" loading="lazy"><div><strong>Cầu đi bộ Ninh Kiều</strong><p>
+              Công trình hiện đại, thu hút du khách.<br>
+              Địa chỉ: P. Ninh Kiều</p></div></div></div>
+      <div class="timeline-item"><span class="timeline-item__time">10:30</span><div class="timeline-item__detail"><img src="image/chua-ong.jpg" alt="Kiến trúc Chùa Ông Cần Thơ" loading="lazy"><div><strong>Chùa Ông</strong><p>
+              Kiến trúc giao thoa Việt – Hoa – Khmer.<br>
+              Địa chỉ: 32 Hai Bà Trưng, P. Ninh Kiều</p></div></div></div>
+      <div class="timeline-item"><span class="timeline-item__time">11:30</span><div class="timeline-item__detail"><img src="image/cho-co.jpg" alt="Chợ cổ Cần Thơ" loading="lazy"><div><strong>Chợ cổ Cần Thơ</strong><p>
+              Chợ cổ với kiến trúc từ năm 1915.<br>
+              Địa chỉ: Hai Bà Trưng, P. Ninh Kiều</p></div></div></div>
+    </section>
+
+    <div class="card tour-card" data-target="tour2" data-duration="1" data-price="600000">
+      <div class="card__body tour-card__body">
+        <h3 class="card__title">Tour 1 ngày: Đường bộ & sông</h3>
+        <img class="card__image tour-card__image" src="image/tour-2.jpg" alt="Tour 1 ngày Đường bộ và sông" loading="lazy">
+        <p class="card__text tour-card__text">Tham quan nhà cổ, đình Bình Thủy, vườn cò.</p>
+        <span>Thời gian: 1 ngày</span>
+        <span>Giá: 600.000 VNĐ/người</span>
+        <button class="button button--outline btn-detail" type="button">Xem chi tiết</button>
+        <button class="button button--primary btn-add-journey" type="button">Thêm vào hành trình</button>
+      </div>
+    </div>
+
+    <section class="timeline-hidden timeline" id="tour2" data-duration="1">
+      <div class="timeline-header-box">
+        <h2>Tour 1 ngày: Đường bộ & sông</h2>
+        <button class="button button--outline btn-close-timeline" type="button">Đóng</button>
+      </div>
+      <h3>Ngày 1 · 6 địa điểm</h3>
+      <div class="timeline-item"><span class="timeline-item__time">08:00</span><div class="timeline-item__detail"><img src="image/nha-co.jpg" alt="Nhà cổ Bình Thủy" loading="lazy"><div><strong>Nhà cổ Bình Thủy</strong><p>Ngôi nhà kiểu Đông Dương đầu thế kỷ XX.<br> Địa chỉ: 144 Bùi Hữu Nghĩa, P. Bình Thủy</p></div></div></div>
+      <div class="timeline-item"><span class="timeline-item__time">09:00</span><div class="timeline-item__detail"><img src="image/dinh-binh-thuy.jpg" alt="Đình Bình Thủy" loading="lazy"><div><strong>Đình Bình Thủy</strong><p>Công trình kiến trúc cổ Long Tuyền Cổ Miếu.<br> Địa chỉ: 46/11A, P. Bình Thủy</p></div></div></div>
+      <div class="timeline-item"><span class="timeline-item__time">12:00</span><div class="timeline-item__detail"><img src="image/cu-lao-tan-loc.jpg" alt="Cù lao Tân Lộc bên sông Hậu" loading="lazy"><div><strong>Cù lao Tân Lộc</strong><p>Cù lao xanh mát bên sông Hậu.<br> Địa chỉ: P. Tân Lộc</p></div></div></div>
+      <div class="timeline-item"><span class="timeline-item__time">16:00</span><div class="timeline-item__detail"><img src="image/vuon-co.jpg" alt="Vườn cò Bằng Lăng" loading="lazy"><div><strong>Vườn cò Bằng Lăng</strong><p>Nơi trú ngụ của hơn 300.000 con cò.<br> Địa chỉ: P. Thốt Nốt</p></div></div></div>
+      <div class="timeline-item"><span class="timeline-item__time">10:30</span><div class="timeline-item__detail"><img src="image/chua-ong.jpg" alt="Kiến trúc Chùa Ông Cần Thơ" loading="lazy"><div><strong>Chùa Ông</strong><p>Kiến trúc giao thoa Việt – Hoa – Khmer.<br> Địa chỉ: 32 Hai Bà Trưng, P. Ninh Kiều</p></div></div></div>
+      <div class="timeline-item"><span class="timeline-item__time">11:30</span><div class="timeline-item__detail"><img src="image/cho-co.jpg" alt="Chợ cổ Cần Thơ" loading="lazy"><div><strong>Chợ cổ Cần Thơ</strong><p>Chợ cổ với kiến trúc từ năm 1915.<br> Địa chỉ: Hai Bà Trưng, P. Ninh Kiều</p></div></div></div>
+    </section>
+
+    <div class="card tour-card" data-target="tour3" data-duration="1" data-price="700000">
+      <div class="card__body tour-card__body">
+        <h3 class="card__title">Tour 1 ngày: Đường sông nước</h3>
+        <img class="card__image tour-card__image" src="image/tour-3.jpg" alt="Tour 1 ngày đường sông nước" loading="lazy">
+        <p class="card__text tour-card__text">Chợ nổi, hủ tiếu, thiền viện, làng Mỹ Khánh.</p>
+        <span>Thời gian: 1 ngày</span>
+        <span>Giá: 700.000 VNĐ/người</span>
+        <button class="button button--outline btn-detail" type="button">Xem chi tiết</button>
+        <button class="button button--primary btn-add-journey" type="button">Thêm vào hành trình</button>
+      </div>
+    </div>
+
+    <section class="timeline-hidden timeline" id="tour3" data-duration="1">
+      <div class="timeline-header-box">
+        <h2>Tour 1 ngày: Đường sông nước</h2>
+        <button class="button button--outline btn-close-timeline" type="button">Đóng</button>
+      </div>
+      <h3>Ngày 1 · 5 địa điểm</h3>
+      <div class="timeline-item"><span class="timeline-item__time">06:00</span><div class="timeline-item__detail"><img src="image/cho-noi.jpg" alt="Chợ nổi Cái Răng trong lịch trình tour" loading="lazy"><div><strong>Chợ nổi Cái Răng</strong><p>Top 10 chợ ấn tượng nhất thế giới.<br> Địa chỉ: P. Cái Răng</p></div></div></div>
+      <div class="timeline-item"><span class="timeline-item__time">07:30</span><div class="timeline-item__detail"><img src="image/hu-tieu-sau-hoai.jpg" alt="Lò hủ tiếu Sáu Hoài" loading="lazy"><div><strong>Hủ Tiếu Sáu Hoài</strong><p>Lò hủ tiếu truyền thống, đặc sản Pizza Hủ Tiếu.<br> Địa chỉ: 476 Lộ Vòng Cung, P. An Bình</p></div></div></div>
+      <div class="timeline-item"><span class="timeline-item__time">08:30</span><div class="timeline-item__detail"><img src="image/thien-vien.jpg" alt="Thiền viện Trúc Lâm Phương Nam" loading="lazy"><div><strong>Thiền viện Trúc Lâm Phương Nam</strong><p>Ngôi chùa lớn, kiến trúc truyền thống.<br> Địa chỉ: Đường Mỹ Nhơn, P. An Bình</p></div></div></div>
+      <div class="timeline-item"><span class="timeline-item__time">09:30</span><div class="timeline-item__detail"><img src="image/lang-my-khanh.jpg" alt="Làng du lịch Mỹ Khánh" loading="lazy"><div><strong>Làng Du lịch Mỹ Khánh</strong><p>Khu du lịch miệt vườn nổi tiếng.<br> Địa chỉ: 335 Lộ Vòng Cung, Xã Mỹ Khánh</p></div></div></div>
+      <div class="timeline-item"><span class="timeline-item__time">14:00</span><div class="timeline-item__detail"><img src="image/ben-ninh-kieu.jpg" alt="Bến Ninh Kiều bên sông Hậu" loading="lazy"><div><strong>Bến Ninh Kiều</strong><p>Biểu tượng nổi tiếng của Cần Thơ.<br> Địa chỉ: P. Ninh Kiều</p></div></div></div>
+    </section>
+
+    <div class="card tour-card" data-target="tour4" data-duration="2" data-price="1000000">
+      <div class="card__body tour-card__body">
+        <h3 class="card__title">Tour 2 ngày: Nghỉ cộng đồng</h3>
+        <img class="card__image tour-card__image" src="image/tour-4.jpg" alt="Tour 2 ngày nghỉ cộng đồng" loading="lazy">
+        <p class="card__text tour-card__text">Nhà cổ, vườn trái cây, du lịch Cồn Sơn.</p>
+        <span>Thời gian: 2 ngày</span>
+        <span>Giá: 1.000.000 VNĐ/người</span>
+        <button class="button button--outline btn-detail" type="button">Xem chi tiết</button>
+        <button class="button button--primary btn-add-journey" type="button">Thêm vào hành trình</button>
+      </div>
+    </div>
+
+    <section class="timeline-hidden timeline" id="tour4" data-duration="2">
+      <div class="timeline-header-box">
+        <h2>Tour 2 ngày: Nghỉ cộng đồng</h2>
+        <button class="button button--outline btn-close-timeline" type="button">Đóng</button>
+      </div>
+      <h3>Ngày 1 · 4 địa điểm</h3>
+      <div class="timeline-item"><span class="timeline-item__time">08:00</span><div class="timeline-item__detail"><img src="image/nha-co.jpg" alt="Nhà cổ Bình Thủy" loading="lazy"><div><strong>Nhà cổ Bình Thủy</strong><p>Ngôi nhà kiểu Đông Dương đầu thế kỷ XX.<br> Địa chỉ: 144 Bùi Hữu Nghĩa, P. Bình Thủy</p></div></div></div>
+      <div class="timeline-item"><span class="timeline-item__time">09:00</span><div class="timeline-item__detail"><img src="image/highlands.jpg" alt="Highlands Coffee Sense City" loading="lazy"><div><strong>Highlands Coffee Sense City</strong><p>Thương hiệu cà phê Việt nổi tiếng.<br> Địa chỉ: 36 Đại Lộ Hòa Bình, P. Ninh Kiều</p></div></div></div>
+      <div class="timeline-item"><span class="timeline-item__time">10:18</span><div class="timeline-item__detail"><img src="image/vuon-ba-cong.jpg" alt="Vườn du lịch Ba Cống" loading="lazy"><div><strong>Vườn du lịch Ba Cống</strong><p>Vườn trái cây đặc sản miền Tây.<br> Địa chỉ: 166 Bình Phó B, P. Long Tuyền</p></div></div></div>
+      <div class="timeline-item"><span class="timeline-item__time">13:00</span><div class="timeline-item__detail"><img src="image/con-son.jpg" alt="Du lịch cộng đồng Cồn Sơn" loading="lazy"><div><strong>Du lịch Cồn Sơn</strong><p>Mô hình du lịch cộng đồng trên sông Hậu.<br> Địa chỉ: Khu Vực I, P. Bình Thủy</p></div></div></div>
+      <h3>Ngày 2 · 3 địa điểm</h3>
+      <div class="timeline-item"><span class="timeline-item__time">06:00</span><div class="timeline-item__detail"><img src="image/thien-vien.jpg" alt="Thiền viện Trúc Lâm Phương Nam" loading="lazy"><div><strong>Thiền viện Trúc Lâm Phương Nam</strong><p>Ngôi chùa lớn, kiến trúc truyền thống.<br> Địa chỉ: Đường Mỹ Nhơn, P. An Bình</p></div></div></div>
+      <div class="timeline-item"><span class="timeline-item__time">08:01</span><div class="timeline-item__detail"><img src="image/lang-my-khanh.jpg" alt="Làng du lịch Mỹ Khánh" loading="lazy"><div><strong>Làng Du lịch Mỹ Khánh</strong><p>Khu du lịch miệt vườn nổi tiếng.<br> Địa chỉ: 335 Lộ Vòng Cung, Xã Mỹ Khánh</p></div></div></div>
+      <div class="timeline-item"><span class="timeline-item__time">10:25</span><div class="timeline-item__detail"><img src="image/ben-ninh-kieu.jpg" alt="Bến Ninh Kiều bên sông Hậu" loading="lazy"><div><strong>Bến Ninh Kiều</strong><p>Biểu tượng nổi tiếng của Cần Thơ.<br> Địa chỉ: P. Ninh Kiều</p></div></div></div>
+    </section>
+  </section>
+
+  <!-- Tour nổi bật -->
+  <section class="highlight-tour">
+    <h2 class="section-title highlight-tour__title">Tour nổi bật</h2>
+    <div class="card tour-card" data-target="tour1" data-duration="2" data-price="1200000">
+      <div class="card__body tour-card__body">
+        <h3 class="card__title">Tour 2 ngày: Nghỉ Homestay</h3>
+        <img class="card__image tour-card__image" src="image/tour-1.jpg" alt="Tour nổi bật 2 ngày nghỉ Homestay" loading="lazy">
+        <p class="card__text tour-card__text">Khám phá chợ nổi Cái Răng, miệt vườn, thiền viện, và nghỉ dưỡng sinh thái tại Hieu's Cottage.</p>
+        <span>Thời gian: 2 ngày</span>
+        <span>Giá: 1.200.000 VNĐ/người</span>
+        <button class="button button--outline btn-detail" type="button">Xem chi tiết</button>
+        <button class="button button--primary btn-add-journey" type="button">Thêm vào hành trình</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="journey-panel" id="journeyPanel" data-journey-panel aria-labelledby="journey-title">
+    <div class="journey-panel__header">
+      <div>
+        <h2 class="section-title journey-panel__title" id="journey-title">Hành trình của bạn</h2>
+        <p class="journey-panel__text">Các tour đã thêm sẽ hiển thị tại đây trước khi bạn xác nhận đặt tour.</p>
+      </div>
+      <button class="button button--outline journey-panel__clear" type="button" data-clear-journey>Xóa hành trình</button>
+    </div>
+
+    <p class="journey-panel__empty" data-journey-empty>Chưa có tour nào trong hành trình.</p>
+    <div class="journey-panel__list" data-journey-list></div>
+
+    <button class="button button--primary journey-panel__book" type="button" data-open-booking>
+      Đặt tour trong hành trình
+    </button>
+  </section>
+
+  <!-- Modal đặt tour -->
+<div id="bookingModal" class="modal booking-modal timeline-hidden">
+  <div class="modal__content booking-modal__content">
+    <button class="modal__close booking-modal__close" type="button" aria-label="Đóng">&times;</button>
+    <h2 class="card__title">Đặt tour</h2>
+    <form class="booking-form" id="bookingForm" novalidate>
+      <fieldset class="booking-form__choice">
+        <legend class="booking-form__legend">Thông tin đặt tour</legend>
+        <label class="booking-form__option" for="booking-account-info">
+          <input type="radio" id="booking-account-info" name="bookingInfoMode" value="account" checked>
+          <span>Dùng thông tin đăng nhập</span>
+        </label>
+        <label class="booking-form__option" for="booking-new-info">
+          <input type="radio" id="booking-new-info" name="bookingInfoMode" value="new">
+          <span>Nhập thông tin mới</span>
+        </label>
+      </fieldset>
+
+      <div class="form-group booking-form__group">
+        <label class="form-label" for="name">Họ tên</label>
+        <input class="form-input" type="text" id="name" placeholder="Họ tên" required>
+        <p class="booking-form__error" id="name-error" aria-live="polite"></p>
+      </div>
+
+      <div class="form-group booking-form__group">
+        <label class="form-label" for="email">Email</label>
+        <input class="form-input" type="email" id="email" placeholder="Email" required>
+        <p class="booking-form__error" id="email-error" aria-live="polite"></p>
+      </div>
+
+      <div class="form-group booking-form__group">
+        <label class="form-label" for="phone">Số điện thoại</label>
+        <input class="form-input" type="tel" id="phone" placeholder="09xxxxxxxx" inputmode="numeric" maxlength="10" required>
+        <p class="booking-form__error" id="phone-error" aria-live="polite"></p>
+      </div>
+
+      <div class="booking-form__terms">
+        <label class="booking-form__check" for="bookingTerms">
+          <input type="checkbox" id="bookingTerms" required>
+          <span>Tôi đồng ý với Điều khoản sử dụng.</span>
+        </label>
+        <p class="booking-form__error" id="bookingTerms-error" aria-live="polite"></p>
+      </div>
+
+      <button class="button button--primary" type="submit">Xác nhận đặt tour</button>
+    </form>
+  </div>
+</div>
+
+<!-- Nút Back To Top -->
+    <!--FOOTER -->
+    <footer class="footer">
+      <div class="footer-content">
+        <div class="footer-brand">
+          <h2>CanTho Travel</h2>
+          <p>Hành trình khám phá vẻ đẹp Tây Đô.</p>
+        </div>
+        <div class="footer-contact">
+          <h3>Thông Tin Liên Hệ</h3>
+          <p>Email: nhom4@gmail.com</p>
+          <p>SĐT: 0123456789</p>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>@ 2026 nhom 4</p>
+      </div>
+    </footer>
+<button class="button button--primary button--back-to-top" type="button" data-back-to-top>↑</button>
+
+  <!-- JavaScript -->
+  <script src="../js/main.js"></script>
+  <script src="lichtrinh.js"></script>
+</body>
+</html>
+
+
+
+

@@ -1,0 +1,65 @@
+.hero--destination {
+  background-image: url("../image/background.jpg");
+}
+
+.khampha-section-title {
+  margin-top: 40px;
+}
+
+.khampha-search {
+  max-width: 500px;
+  display: flex;
+  gap: 10px;
+  margin: 0 auto 40px;
+}
+
+.khampha-search__input {
+  flex: 1;
+  padding: 12px 16px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  font-family: "Poppins", sans-serif;
+  font-size: 16px;
+}
+
+.khampha-search__input:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: var(--shadow-focus);
+}
+
+.khampha-search__button {
+  padding: 12px 20px;
+  border: 0;
+  border-radius: var(--radius-lg);
+  background-color: var(--color-primary);
+  color: var(--color-white);
+  cursor: pointer;
+  font-family: "Poppins", sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  transition: var(--transition-base);
+}
+
+.khampha-search__button:hover,
+.khampha-search__button:focus-visible {
+  background-color: var(--color-primary-dark);
+}
+
+.khampha-card--hidden {
+  display: none !important;
+}
+
+.khampha-search__no-result {
+  display: none;
+  margin-top: 20px;
+  color: var(--color-text-subtle);
+  font-size: 16px;
+  text-align: center;
+}
+
+@media (max-width: 768px) {
+  .khampha-search {
+    flex-direction: column;
+  }
+}

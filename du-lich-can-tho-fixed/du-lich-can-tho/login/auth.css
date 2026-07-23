@@ -1,0 +1,316 @@
+.login-page,
+.register-page {
+  min-height: 100vh;
+  background: var(--color-body);
+}
+
+.hero--login .hero__content,
+.hero--register .hero__content {
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  background: rgba(0, 0, 0, 0.55);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(4px);
+  max-width: 700px;
+  padding: 30px 40px;
+  border-radius: 15px;
+}
+
+.login-main,
+.register-main {
+  width: 90%;
+  max-width: var(--container-width);
+  display: flex;
+  justify-content: center;
+  margin: 50px auto;
+}
+
+.login-card,
+.register-card {
+  max-width: 100%;
+  padding: 40px;
+  border-radius: var(--radius-xl);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-card);
+  text-align: center;
+  animation: authFadeUp 0.65s ease both;
+}
+
+.login-card__avatar,
+.register-card__avatar {
+  width: 82px;
+  height: 82px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0 auto 18px;
+  border-radius: 50%;
+  background: var(--color-info-bg);
+  color: var(--color-primary);
+  font-size: 58px;
+}
+
+.login-card__title,
+.register-card__title {
+  color: var(--color-text-strong);
+  font-size: 26px;
+}
+
+.login-form,
+.register-form {
+  text-align: left;
+}
+
+.login-form__group,
+.register-form__group {
+  margin-bottom: 16px;
+}
+
+.login-form__label,
+.register-form__label {
+  display: inline-block;
+  margin-bottom: 8px;
+  color: var(--color-text);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.login-form__field,
+.register-form__field {
+  position: relative;
+}
+
+.login-form__icon,
+.register-form__icon {
+  position: absolute;
+  top: 50%;
+  left: 16px;
+  color: var(--color-text-muted);
+  pointer-events: none;
+  transform: translateY(-50%);
+  transition: var(--transition-base);
+}
+
+.login-form__input,
+.register-form__input {
+  width: 100%;
+  height: 50px;
+  padding: 0 16px 0 46px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  outline: none;
+  background: var(--color-white);
+  color: var(--color-text-strong);
+  font: inherit;
+  transition: var(--transition-base);
+}
+
+.login-form__input--password,
+.register-form__input--password {
+  padding-right: 48px;
+}
+
+.login-form__input:hover,
+.register-form__input:hover {
+  border-color: var(--color-primary);
+  box-shadow: var(--shadow-soft);
+}
+
+.login-form__input:focus,
+.register-form__input:focus {
+  border-color: var(--color-primary);
+  box-shadow: var(--shadow-focus);
+}
+
+.login-form__field:focus-within .login-form__icon,
+.register-form__field:focus-within .register-form__icon {
+  color: var(--color-primary);
+}
+
+.login-form__input.is-error,
+.register-form__input.is-error {
+  border-color: var(--color-danger);
+  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
+}
+
+.login-form__error,
+.register-form__error {
+  min-height: 20px;
+  margin-top: 6px;
+  color: var(--color-danger);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.login-form__toggle,
+.register-form__toggle {
+  position: absolute;
+  top: 50%;
+  right: 12px;
+  width: 36px;
+  height: 36px;
+  border: 0;
+  border-radius: var(--radius-lg);
+  background: transparent;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  transform: translateY(-50%);
+  transition: var(--transition-base);
+}
+
+.login-form__toggle:hover,
+.login-form__toggle:focus-visible,
+.register-form__toggle:hover,
+.register-form__toggle:focus-visible {
+  background: var(--color-info-bg);
+  color: var(--color-primary);
+}
+
+.login-form__link,
+.register-form__link {
+  color: var(--color-primary);
+  font-weight: 600;
+  text-decoration: none;
+  transition: var(--transition-base);
+}
+
+.login-form__link:hover,
+.register-form__link:hover {
+  color: var(--color-primary-dark);
+  text-decoration: underline;
+}
+
+.login-form__submit,
+.register-form__submit {
+  width: 100%;
+  height: 52px;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  overflow: hidden;
+  border: 0;
+  border-radius: var(--radius-lg);
+  background: var(--color-primary);
+  color: var(--color-white);
+  cursor: pointer;
+  font: inherit;
+  font-weight: 700;
+  letter-spacing: 0;
+  transition: var(--transition-base);
+}
+
+.login-form__submit:hover,
+.register-form__submit:hover {
+  background: var(--color-primary-dark);
+  box-shadow: var(--shadow-card);
+  transform: translateY(-2px) scale(1.01);
+}
+
+.login-form__submit:disabled,
+.register-form__submit:disabled {
+  cursor: wait;
+  opacity: 0.86;
+  transform: none;
+}
+
+.login-form__spinner,
+.register-form__spinner {
+  display: none;
+  width: 18px;
+  height: 18px;
+  border: 2px solid rgba(255, 255, 255, 0.45);
+  border-top-color: var(--color-white);
+  border-radius: 50%;
+  animation: authSpin 0.75s linear infinite;
+}
+
+.login-form__submit.is-loading .login-form__spinner,
+.register-form__submit.is-loading .register-form__spinner {
+  display: inline-block;
+}
+
+.login-toast,
+.register-toast {
+  position: fixed;
+  top: 92px;
+  right: 24px;
+  z-index: 30;
+  padding: 14px 20px;
+  border-radius: var(--radius-xl);
+  background: var(--color-success-dark);
+  color: var(--color-white);
+  font-weight: 600;
+  box-shadow: var(--shadow-card);
+  opacity: 0;
+  visibility: hidden;
+  transition: var(--transition-base);
+}
+
+@keyframes authFadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes authSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (max-width: 768px) {
+  .login-main,
+  .register-main {
+    width: 95%;
+    margin: 36px auto;
+  }
+
+  .login-card,
+  .register-card {
+    padding: 30px 22px;
+  }
+
+  .login-card__title,
+  .register-card__title {
+    font-size: 23px;
+  }
+
+  .hero--login .hero__content,
+  .hero--register .hero__content {
+    padding: 25px 25px;
+    max-width: 90%;
+  }
+
+  .login-toast,
+  .register-toast {
+    top: auto;
+    right: 16px;
+    bottom: 18px;
+    left: 16px;
+    text-align: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero--login .hero__title,
+  .hero--register .hero__title {
+    font-size: 28px;
+  }
+
+  .hero--login .hero__text,
+  .hero--register .hero__text {
+    font-size: 14px;
+  }
+
+  .hero--login .hero__content,
+  .hero--register .hero__content {
+    padding: 20px 15px;
+    max-width: 95%;
+  }
+}
