@@ -149,22 +149,9 @@
     }
 
     const loginItem = loginLink.closest("li");
-    const journeyItem = document.createElement("li");
-    const journeyButton = document.createElement("button");
-    const journeyIcon = document.createElement("img");
     const favoriteItem = document.createElement("li");
     const favoriteButton = document.createElement("button");
     const favoriteIcon = document.createElement("img");
-
-    journeyButton.type = "button";
-    journeyButton.className = "navbar__action";
-    journeyButton.dataset.openJourney = "true";
-    journeyButton.title = "Hành trình";
-    journeyButton.setAttribute("aria-label", "Hành trình");
-    journeyIcon.className = "navbar__action-icon";
-    journeyIcon.src = `${getPagePrefix()}assets/icons/location.png`;
-    journeyIcon.alt = "";
-    journeyIcon.setAttribute("aria-hidden", "true");
 
     favoriteButton.type = "button";
     favoriteButton.className = "navbar__action";
@@ -176,16 +163,78 @@
     favoriteIcon.alt = "";
     favoriteIcon.setAttribute("aria-hidden", "true");
 
-    journeyButton.append(journeyIcon);
     favoriteButton.append(favoriteIcon);
-    journeyItem.append(journeyButton);
     favoriteItem.append(favoriteButton);
 
     if (loginItem) {
       loginItem.remove();
     }
 
-    menuList.append(journeyItem, favoriteItem);
+    menuList.append(favoriteItem);
+  };
+
+  const closeResponsiveMenu = (navbar, toggleButton) => {
+    navbar.classList.remove("navbar--menu-open");
+    toggleButton.setAttribute("aria-expanded", "false");
+    toggleButton.setAttribute("aria-label", "Mo menu dieu huong");
+  };
+
+  const initResponsiveNavbar = () => {
+    const navbar = document.querySelector(".navbar");
+    const menu = navbar ? navbar.querySelector(".menu") : null;
+
+    if (!navbar || !menu || navbar.querySelector(".navbar__toggle")) {
+      return;
+    }
+
+    const toggleButton = document.createElement("button");
+    const menuId = menu.id || "main-navigation";
+
+    menu.id = menuId;
+    toggleButton.type = "button";
+    toggleButton.className = "navbar__toggle";
+    toggleButton.setAttribute("aria-controls", menuId);
+    toggleButton.setAttribute("aria-expanded", "false");
+    toggleButton.setAttribute("aria-label", "Mo menu dieu huong");
+
+    for (let index = 0; index < 3; index += 1) {
+      const line = document.createElement("span");
+      line.className = "navbar__toggle-line";
+      line.setAttribute("aria-hidden", "true");
+      toggleButton.append(line);
+    }
+
+    navbar.classList.add("navbar--has-toggle");
+    navbar.insertBefore(toggleButton, menu);
+
+    toggleButton.addEventListener("click", () => {
+      const isOpen = navbar.classList.toggle("navbar--menu-open");
+      toggleButton.setAttribute("aria-expanded", String(isOpen));
+      toggleButton.setAttribute(
+        "aria-label",
+        isOpen ? "Dong menu dieu huong" : "Mo menu dieu huong"
+      );
+    });
+
+    menu.addEventListener("click", (event) => {
+      if (event.target.closest("a, button")) {
+        closeResponsiveMenu(navbar, toggleButton);
+      }
+    });
+
+    document.addEventListener("click", (event) => {
+      if (!navbar.classList.contains("navbar--menu-open") || navbar.contains(event.target)) {
+        return;
+      }
+
+      closeResponsiveMenu(navbar, toggleButton);
+    });
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") {
+        closeResponsiveMenu(navbar, toggleButton);
+      }
+    });
   };
 
   // Lay ten hien thi cua card de luu vao danh sach yeu thich.
@@ -473,6 +522,7 @@
 
   // Khoi tao cac tinh nang chung sau khi file duoc nap.
   initNavbarByLoginState();
+  initResponsiveNavbar();
   initFavoriteButtons();
   initFavoritePanel();
   initJourneyNavigation();

@@ -91,6 +91,50 @@ img {
   font-weight: 700;
 }
 
+.navbar__toggle {
+  width: 42px;
+  height: 42px;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 5px;
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  border-radius: var(--radius-md);
+  background: transparent;
+  color: var(--color-white);
+  cursor: pointer;
+  transition: var(--transition-base);
+}
+
+.navbar__toggle:hover,
+.navbar__toggle:focus-visible {
+  background: var(--color-white);
+  color: var(--color-primary);
+  outline: none;
+}
+
+.navbar__toggle-line {
+  width: 22px;
+  height: 2px;
+  display: block;
+  border-radius: 999px;
+  background: currentColor;
+  transition: var(--transition-base);
+}
+
+.navbar--menu-open .navbar__toggle-line:nth-child(1) {
+  transform: translateY(7px) rotate(45deg);
+}
+
+.navbar--menu-open .navbar__toggle-line:nth-child(2) {
+  opacity: 0;
+}
+
+.navbar--menu-open .navbar__toggle-line:nth-child(3) {
+  transform: translateY(-7px) rotate(-45deg);
+}
+
 .menu ul {
   display: flex;
   list-style: none;
@@ -617,20 +661,72 @@ img {
 
 @media (max-width: 768px) {
   .navbar {
-    flex-direction: column;
+    position: relative;
+    flex-direction: row;
+    flex-wrap: wrap;
     padding: 15px 20px;
-    gap: 15px;
+    gap: 0;
+  }
+
+  .logo__text {
+    font-size: 20px;
+  }
+
+  .navbar__toggle {
+    display: inline-flex;
+    margin-left: auto;
+  }
+
+  .menu {
+    width: 100%;
+  }
+
+  .navbar--has-toggle .menu {
+    display: grid;
+    grid-template-rows: 0fr;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: grid-template-rows var(--transition-base), opacity var(--transition-base),
+      visibility var(--transition-base), margin-top var(--transition-base);
+  }
+
+  .navbar--has-toggle.navbar--menu-open .menu {
+    grid-template-rows: 1fr;
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    margin-top: 14px;
   }
 
   .menu ul {
-    flex-wrap: wrap;
+    flex-direction: column;
+    justify-content: flex-start;
+    gap: 8px;
+    width: 100%;
+    min-height: 0;
+    overflow: hidden;
+    padding-top: 12px;
+    border-top: 1px solid rgba(255, 255, 255, 0.22);
+  }
+
+  .menu ul li {
+    width: 100%;
+    display: flex;
     justify-content: center;
-    gap: 10px;
   }
 
   .menu ul li a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
     font-size: 14px;
-    padding: 4px 8px;
+    padding: 9px 12px;
+  }
+
+  .menu ul li .navbar__action {
+    margin: 0 auto;
   }
 
   .hero__title {
