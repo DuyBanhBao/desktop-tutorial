@@ -1,10 +1,10 @@
-/* Hero */
+/* Ảnh giới thiệu */
 .lichtrinh-hero {
   color: var(--color-white);
   text-align: center;
 }
 
-/* Tour List */
+/* Danh sách tour */
 .lichtrinh-intro {
   width: 90%;
   max-width: var(--container-width);
@@ -61,6 +61,14 @@
   padding: 0 16px;
 }
 
+.lichtrinh-empty {
+  width: 90%;
+  max-width: var(--container-width);
+  margin: -20px auto 30px;
+  color: var(--color-text-muted);
+  text-align: center;
+}
+
 .tour-preview,
 .highlight-tour {
   width: 90%;
@@ -105,7 +113,7 @@
   margin-right: 8px;
 }
 
-/* Timeline */
+/* Chi tiết lịch trình */
 .timeline {
   grid-column: 1 / -1;
   padding: 30px;
@@ -178,7 +186,7 @@
 }
 
 .journey-panel {
-  /* Khu vuc gio hanh trinh: hien cac tour da them truoc khi dat. */
+/* Khu vực hiển thị các tour đã thêm trước khi đặt. */
   width: 90%;
   max-width: var(--container-width);
   margin: 0 auto 50px;
@@ -255,7 +263,7 @@
   opacity: 0.55;
 }
 
-/* Booking Modal Overrides */
+/* Modal đặt tour */
 .booking-modal__content {
   max-width: 520px;
 }
@@ -267,7 +275,7 @@
 }
 
 .booking-form__choice {
-  /* Nguoi dung co the chon dung thong tin dang nhap hoac nhap thong tin moi. */
+/* Người dùng chọn thông tin tài khoản hoặc nhập thông tin mới. */
   display: grid;
   gap: 10px;
   margin-bottom: 16px;
@@ -301,7 +309,7 @@
   margin-bottom: 16px;
 }
 
-/* Responsive */
+/* Điều chỉnh trên màn hình nhỏ */
 @media (max-width: 992px) {
   .timeline-item__detail {
     grid-template-columns: 140px 1fr;

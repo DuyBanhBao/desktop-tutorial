@@ -1,5 +1,5 @@
+// Xử lý form đăng nhập và kiểm tra tài khoản đã đăng ký.
 (() => {
-  // Lay cac thanh phan cua form dang nhap.
   const form = document.querySelector("#login-form");
   const emailInput = document.querySelector("#email");
   const passwordInput = document.querySelector("#password");
@@ -13,21 +13,29 @@
     return;
   }
 
-  const { clearFormError, emailPattern, initPasswordToggles, setFormError, setLoadingState, showToast } =
-    window.CanThoUI;
+  const {
+    clearFormError,
+    emailPattern,
+    getRegisteredAccount,
+    initPasswordToggles,
+    isValidPassword,
+    setFormError,
+    setLoadingState,
+    showToast,
+  } = window.CanThoUI;
 
   const storageKey = "canthoLoginEmail";
-  // Dang nhap tinh: chi luu trang thai va thong tin co ban vao localStorage.
   const loginFlagKey = "canthoLoggedIn";
   const userNameKey = "canthoUserName";
   const userEmailKey = "canthoUserEmail";
   const userPhoneKey = "canthoUserPhone";
   const messages = {
     email: "Vui lòng nhập email hợp lệ.",
-    password: "Mật khẩu phải có tối thiểu 6 ký tự.",
+    password: "Mật khẩu phải có ít nhất 8 ký tự, gồm chữ hoa, chữ thường và số.",
+    account: "Email hoặc mật khẩu không đúng.",
   };
 
-  // Kiem tra dinh dang email.
+  // Kiểm tra định dạng email đăng nhập.
   const validateEmail = () => {
     const isValid = emailPattern.test(emailInput.value.trim());
 
@@ -40,9 +48,9 @@
     return true;
   };
 
-  // Mat khau dang nhap chi can toi thieu 6 ky tu de phu hop web tinh.
+  // Kiểm tra mật khẩu theo cùng quy tắc với trang đăng ký.
   const validatePassword = () => {
-    const isValid = passwordInput.value.trim().length >= 6;
+    const isValid = isValidPassword(passwordInput.value);
 
     if (!isValid) {
       setFormError(passwordInput, messages.password);
@@ -53,17 +61,16 @@
     return true;
   };
 
-  // Neu tick "Ghi nho dang nhap" thi luu email cho lan sau.
+  // Ghi nhớ hoặc xóa email đăng nhập trong localStorage.
   const syncRememberedEmail = () => {
     if (rememberInput.checked) {
-      localStorage.setItem(storageKey, emailInput.value.trim());
-      return;
+      localStorage.setItem(storageKey, emailInput.value.trim().toLowerCase());
+    } else {
+      localStorage.removeItem(storageKey);
     }
-
-    localStorage.removeItem(storageKey);
   };
 
-  // Tu dong dien lai email da ghi nho.
+  // Điền lại email đã được người dùng chọn ghi nhớ.
   const fillRememberedEmail = () => {
     const rememberedEmail = localStorage.getItem(storageKey);
 
@@ -73,78 +80,93 @@
     }
   };
 
-  // Luu thong tin nguoi dung sau khi dang nhap thanh cong.
-  const saveCurrentUser = () => {
-    const email = emailInput.value.trim();
-    const registeredEmail = localStorage.getItem("canthoRegisterEmail") || "";
-    const registeredName = localStorage.getItem("canthoRegisterFullname") || "";
-    const registeredPhone = localStorage.getItem("canthoRegisterPhone") || "";
-    const fallbackName = email.split("@")[0];
+  // Đối chiếu email và mật khẩu với tài khoản trong localStorage.
+  const checkRegisteredAccount = () => {
+    const account = getRegisteredAccount();
+    const email = emailInput.value.trim().toLowerCase();
 
-    localStorage.setItem(loginFlagKey, "true");
-    localStorage.setItem(userEmailKey, email);
-    localStorage.setItem(userNameKey, registeredEmail === email ? registeredName : fallbackName);
-    localStorage.setItem(userPhoneKey, registeredEmail === email ? registeredPhone : "");
-  };
-
-  emailInput.addEventListener("input", () => {
-    if (emailInput.value.trim() !== "") {
-      validateEmail();
-      return;
-    }
-
-    clearFormError(emailInput);
-  });
-
-  passwordInput.addEventListener("input", () => {
-    if (passwordInput.value.trim() !== "") {
-      validatePassword();
-      return;
+    if (!account || account.email !== email || account.password !== passwordInput.value) {
+      setFormError(passwordInput, messages.account);
+      return null;
     }
 
     clearFormError(passwordInput);
-  });
+    return account;
+  };
 
-  rememberInput.addEventListener("change", syncRememberedEmail);
+  // Lưu trạng thái và thông tin người dùng sau khi đăng nhập đúng.
+  const saveCurrentUser = (account) => {
+    localStorage.setItem(loginFlagKey, "true");
+    localStorage.setItem(userEmailKey, account.email);
+    localStorage.setItem(userNameKey, account.fullname);
+    localStorage.setItem(userPhoneKey, account.phone);
+  };
 
-  initPasswordToggles([toggleButton], () => passwordInput);
+  // Kiểm tra email ngay khi người dùng nhập.
+  const handleEmailInput = () => {
+    if (emailInput.value.trim()) {
+      validateEmail();
+    } else {
+      clearFormError(emailInput);
+    }
+  };
 
-  // Xu ly submit form dang nhap va chuyen ve trang chu.
-  form.addEventListener("submit", (event) => {
+  // Kiểm tra mật khẩu ngay khi người dùng nhập.
+  const handlePasswordInput = () => {
+    if (passwordInput.value) {
+      validatePassword();
+    } else {
+      clearFormError(passwordInput);
+    }
+  };
+
+  // Kết thúc hiệu ứng đăng nhập và chuyển về trang chủ.
+  const finishLogin = () => {
+    setLoadingState(submitButton, submitText, false, "Đang đăng nhập...", "ĐĂNG NHẬP");
+    window.location.href = "../home/index.html";
+  };
+
+  // Hiển thị toast sau khi xác thực thành công.
+  const showLoginSuccess = () => {
+    showToast(toast);
+  };
+
+  // Kiểm tra dữ liệu và xử lý đăng nhập.
+  const handleLoginSubmit = (event) => {
     event.preventDefault();
 
     const isEmailValid = validateEmail();
     const isPasswordValid = validatePassword();
 
     if (!isEmailValid || !isPasswordValid) {
+      const firstError = form.querySelector('[aria-invalid="true"]');
+      if (firstError) {
+        firstError.focus();
+      }
       return;
     }
 
-    saveCurrentUser();
+    const account = checkRegisteredAccount();
+    if (!account) {
+      passwordInput.focus();
+      return;
+    }
+
+    saveCurrentUser(account);
     syncRememberedEmail();
-    setLoadingState(
-      submitButton,
-      submitText,
-      true,
-      "Đang đăng nhập...",
-      "ĐĂNG NHẬP"
-    );
+    setLoadingState(submitButton, submitText, true, "Đang đăng nhập...", "ĐĂNG NHẬP");
+    window.setTimeout(showLoginSuccess, 500);
+    window.setTimeout(finishLogin, 1500);
+  };
 
-    window.setTimeout(() => {
-      showToast(toast);
-    }, 500);
+  emailInput.addEventListener("input", handleEmailInput);
+  passwordInput.addEventListener("input", handlePasswordInput);
+  rememberInput.addEventListener("change", syncRememberedEmail);
+  form.addEventListener("submit", handleLoginSubmit);
 
-    window.setTimeout(() => {
-      setLoadingState(
-        submitButton,
-        submitText,
-        false,
-        "Đang đăng nhập...",
-        "ĐĂNG NHẬP"
-      );
-      window.location.href = "../home/index.html";
-    }, 1500);
-  });
+  // Trả về ô mật khẩu cho nút hiện và ẩn mật khẩu.
+  const getPasswordInput = () => passwordInput;
 
+  initPasswordToggles([toggleButton], getPasswordInput);
   fillRememberedEmail();
 })();

@@ -3,30 +3,64 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Lịch trình Du lịch Cần Thơ</title>
-    <link rel="icon" type="image/png" href="image/favicon.jpg">
+  <meta name="description" content="Tham khảo, tìm kiếm và lưu các tour du lịch Cần Thơ phù hợp với bạn." />
+  <title>Lịch trình du lịch Cần Thơ | CanTho Travel</title>
+    <link rel="icon" type="image/jpeg" href="image/favicon.jpg">
   <link rel="stylesheet" href="../css/style.css">
   <link rel="stylesheet" href="lichtrinh.css">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <!--NAVBAR-->
+    <!-- Thanh điều hướng -->
     <header class="navbar">
       <div class="logo">
         <span class="logo__text">CanTho Travel</span>
       </div>
-      <nav class="menu" aria-label="Điều hướng chính">
+          <button
+      class="navbar__toggle"
+      type="button"
+      aria-controls="main-navigation"
+      aria-expanded="false"
+      aria-label="Mở menu điều hướng"
+    >
+      <span class="navbar__toggle-line" aria-hidden="true"></span>
+      <span class="navbar__toggle-line" aria-hidden="true"></span>
+      <span class="navbar__toggle-line" aria-hidden="true"></span>
+    </button>
+<nav class="menu" id="main-navigation" aria-label="Điều hướng chính">
         <ul>
           <li><a href="../home/index.html">Trang Chủ</a></li>
           <li><a href="../khampha/dulich.html">Khám Phá</a></li>
           <li><a href="../amthuc/amthuc.html">Ẩm Thực</a></li>
           <li><a href="../lichtrinh/lichtrinh.html" class="active">Lịch Trình</a></li>
           <li><a href="../luutru/luutru.html">Lưu Trú</a></li>
-          <li><a href="../login/login.html">Đăng Nhập</a></li>
+          <li data-login-item><a href="../login/login.html">Đăng Nhập</a></li>
+          <li class="navbar__user navbar__user--hidden" data-user-menu>
+            <button class="navbar__action" type="button" data-open-favorites aria-label="Mở danh sách yêu thích">
+              <img class="navbar__action-icon" src="../assets/icons/love.png" alt="" aria-hidden="true" />
+              <span class="navbar__favorite-badge" data-favorite-count aria-label="0 mục yêu thích" hidden>0</span>
+            </button>
+            <div class="navbar__account" data-account-menu>
+              <button
+                class="navbar__account-trigger"
+                type="button"
+                data-account-toggle
+                aria-expanded="false"
+                aria-label="Mở menu tài khoản"
+              >
+                <span class="navbar__user-name" data-user-name></span>
+                <span class="navbar__account-arrow" aria-hidden="true">▼</span>
+              </button>
+              <div class="navbar__account-menu">
+                <button class="navbar__logout" type="button" data-logout>Đăng xuất</button>
+              </div>
+            </div>
+          </li>
         </ul>
       </nav>
     </header>
-  <!-- Hero -->
+  <main id="main-content">
+  <!-- Ảnh giới thiệu -->
   <section class="hero lichtrinh-hero" style="background-image:url('image/background-lichtrinh.jpg')">
     <div class="hero__content">
       <h1 class="hero__title">Danh sách Tour Cần Thơ</h1>
@@ -34,11 +68,11 @@
     </div>
   </section>
 
-  <!-- Nút Quay về trang chủ -->
+  <!-- Nút quay về trang chủ -->
   <div class="page-container">
 </div>
 
-  <!-- Intro -->
+  <!-- Giới thiệu -->
   <section class="lichtrinh-intro">
     <h2 class="section-title lichtrinh-intro__title">Khám phá Cần Thơ qua các tour đặc sắc</h2>
     <p>Trải nghiệm văn hóa miền Tây, tham quan chợ nổi, miệt vườn, và nhiều điểm đến hấp dẫn. 
@@ -64,8 +98,12 @@
     <button class="button button--primary lichtrinh-filter__button" id="filterBtn" type="button">Tìm kiếm</button>
   </section>
 
+  <p class="lichtrinh-empty" data-tour-empty aria-live="polite" hidden>
+    Không tìm thấy tour phù hợp.
+  </p>
 
-  <!-- Preview Tour -->
+
+  <!-- Danh sách tour -->
   <section class="tour-preview">
     <div class="card tour-card" data-target="tour1" data-duration="2" data-price="1200000">
       <div class="card__body tour-card__body">
@@ -224,7 +262,48 @@
     </div>
 
     <p class="journey-panel__empty" data-journey-empty>Chưa có tour nào trong hành trình.</p>
-    <div class="journey-panel__list" data-journey-list></div>
+    <div class="journey-panel__list" data-journey-list>
+      <article class="journey-panel__item" data-journey-item="tour1" hidden>
+        <img class="journey-panel__image" src="image/tour-1.jpg" alt="Tour 2 ngày nghỉ Homestay" loading="lazy" />
+        <div class="journey-panel__body">
+          <h3 class="journey-panel__item-title">Tour 2 ngày: Nghỉ Homestay</h3>
+          <p class="journey-panel__item-text">Khám phá chợ nổi, miệt vườn, nghỉ dưỡng sinh thái.</p>
+          <p class="journey-panel__item-meta">Thời gian: 2 ngày</p>
+          <p class="journey-panel__item-meta">Giá: 1.200.000 VNĐ/người</p>
+          <button class="button button--outline journey-panel__remove" type="button" data-remove-journey="tour1">Xóa</button>
+        </div>
+      </article>
+      <article class="journey-panel__item" data-journey-item="tour2" hidden>
+        <img class="journey-panel__image" src="image/tour-2.jpg" alt="Tour 1 ngày đường bộ và sông" loading="lazy" />
+        <div class="journey-panel__body">
+          <h3 class="journey-panel__item-title">Tour 1 ngày: Đường bộ &amp; sông</h3>
+          <p class="journey-panel__item-text">Tham quan nhà cổ, đình Bình Thủy, vườn cò.</p>
+          <p class="journey-panel__item-meta">Thời gian: 1 ngày</p>
+          <p class="journey-panel__item-meta">Giá: 600.000 VNĐ/người</p>
+          <button class="button button--outline journey-panel__remove" type="button" data-remove-journey="tour2">Xóa</button>
+        </div>
+      </article>
+      <article class="journey-panel__item" data-journey-item="tour3" hidden>
+        <img class="journey-panel__image" src="image/tour-3.jpg" alt="Tour 1 ngày đường sông nước" loading="lazy" />
+        <div class="journey-panel__body">
+          <h3 class="journey-panel__item-title">Tour 1 ngày: Đường sông nước</h3>
+          <p class="journey-panel__item-text">Chợ nổi, hủ tiếu, thiền viện, làng Mỹ Khánh.</p>
+          <p class="journey-panel__item-meta">Thời gian: 1 ngày</p>
+          <p class="journey-panel__item-meta">Giá: 700.000 VNĐ/người</p>
+          <button class="button button--outline journey-panel__remove" type="button" data-remove-journey="tour3">Xóa</button>
+        </div>
+      </article>
+      <article class="journey-panel__item" data-journey-item="tour4" hidden>
+        <img class="journey-panel__image" src="image/tour-4.jpg" alt="Tour 2 ngày nghỉ cộng đồng" loading="lazy" />
+        <div class="journey-panel__body">
+          <h3 class="journey-panel__item-title">Tour 2 ngày: Nghỉ cộng đồng</h3>
+          <p class="journey-panel__item-text">Nhà cổ, vườn trái cây, du lịch Cồn Sơn.</p>
+          <p class="journey-panel__item-meta">Thời gian: 2 ngày</p>
+          <p class="journey-panel__item-meta">Giá: 1.000.000 VNĐ/người</p>
+          <button class="button button--outline journey-panel__remove" type="button" data-remove-journey="tour4">Xóa</button>
+        </div>
+      </article>
+    </div>
 
     <button class="button button--primary journey-panel__book" type="button" data-open-booking>
       Đặt tour trong hành trình
@@ -232,10 +311,10 @@
   </section>
 
   <!-- Modal đặt tour -->
-<div id="bookingModal" class="modal booking-modal timeline-hidden">
+<div id="bookingModal" class="modal booking-modal timeline-hidden" role="dialog" aria-modal="true" aria-labelledby="booking-title">
   <div class="modal__content booking-modal__content">
     <button class="modal__close booking-modal__close" type="button" aria-label="Đóng">&times;</button>
-    <h2 class="card__title">Đặt tour</h2>
+    <h2 class="card__title" id="booking-title">Đặt tour</h2>
     <form class="booking-form" id="bookingForm" novalidate>
       <fieldset class="booking-form__choice">
         <legend class="booking-form__legend">Thông tin đặt tour</legend>
@@ -280,9 +359,107 @@
   </div>
 </div>
 
-<!-- Nút Back To Top -->
-    <!--FOOTER -->
-    <footer class="footer">
+  <!-- Nút quay lại đầu trang -->
+    <!-- Chân trang -->
+    
+  </main>
+
+  <div class="modal favorites-panel favorites-panel--hidden" data-favorites-panel role="dialog" aria-modal="true" aria-labelledby="favorites-title">
+    <section class="modal__content favorites-panel__content">
+      <button class="modal__close favorites-panel__close" type="button" data-close-favorites aria-label="Đóng danh sách yêu thích">&times;</button>
+      <h2 class="favorites-panel__title" id="favorites-title">Yêu thích</h2>
+      <p class="favorites-panel__empty" data-favorites-empty>Chưa có mục yêu thích nào.</p>
+      <div class="favorites-panel__list" data-favorites-list>
+        <article class="favorites-panel__item" data-favorite-item="destination-ben-ninh-kieu" hidden>
+          <h3 class="favorites-panel__item-title">Bến Ninh Kiều</h3>
+          <p class="favorites-panel__item-type">Địa điểm</p>
+          <a class="favorites-panel__item-link" href="../khampha/benninhkieu.html">Xem</a>
+        </article>
+        <article class="favorites-panel__item" data-favorite-item="destination-cho-noi-cai-rang" hidden>
+          <h3 class="favorites-panel__item-title">Chợ nổi Cái Răng</h3>
+          <p class="favorites-panel__item-type">Địa điểm</p>
+          <a class="favorites-panel__item-link" href="../khampha/chonoicairang.html">Xem</a>
+        </article>
+        <article class="favorites-panel__item" data-favorite-item="destination-nha-co-binh-thuy" hidden>
+          <h3 class="favorites-panel__item-title">Nhà cổ Bình Thủy</h3>
+          <p class="favorites-panel__item-type">Địa điểm</p>
+          <a class="favorites-panel__item-link" href="../khampha/nhacobinhthuy.html">Xem</a>
+        </article>
+        <article class="favorites-panel__item" data-favorite-item="destination-lang-du-lich-my-khanh" hidden>
+          <h3 class="favorites-panel__item-title">Làng du lịch Mỹ Khánh</h3>
+          <p class="favorites-panel__item-type">Địa điểm</p>
+          <a class="favorites-panel__item-link" href="../khampha/khudulichmykhanh.html">Xem</a>
+        </article>
+        <article class="favorites-panel__item" data-favorite-item="destination-con-son" hidden>
+          <h3 class="favorites-panel__item-title">Cồn Sơn</h3>
+          <p class="favorites-panel__item-type">Địa điểm</p>
+          <a class="favorites-panel__item-link" href="../khampha/conson.html">Xem</a>
+        </article>
+        <article class="favorites-panel__item" data-favorite-item="food-nemnuong" hidden>
+          <h3 class="favorites-panel__item-title">Nem nướng</h3>
+          <p class="favorites-panel__item-type">Ẩm thực</p>
+          <a class="favorites-panel__item-link" href="../amthuc/amthuc.html">Xem</a>
+        </article>
+        <article class="favorites-panel__item" data-favorite-item="food-banhxeo" hidden>
+          <h3 class="favorites-panel__item-title">Bánh xèo</h3>
+          <p class="favorites-panel__item-type">Ẩm thực</p>
+          <a class="favorites-panel__item-link" href="../amthuc/amthuc.html">Xem</a>
+        </article>
+        <article class="favorites-panel__item" data-favorite-item="food-banhcong" hidden>
+          <h3 class="favorites-panel__item-title">Bánh cống</h3>
+          <p class="favorites-panel__item-type">Ẩm thực</p>
+          <a class="favorites-panel__item-link" href="../amthuc/amthuc.html">Xem</a>
+        </article>
+        <article class="favorites-panel__item" data-favorite-item="food-vitnauchao" hidden>
+          <h3 class="favorites-panel__item-title">Vịt nấu chao</h3>
+          <p class="favorites-panel__item-type">Ẩm thực</p>
+          <a class="favorites-panel__item-link" href="../amthuc/amthuc.html">Xem</a>
+        </article>
+        <article class="favorites-panel__item" data-favorite-item="food-laumam" hidden>
+          <h3 class="favorites-panel__item-title">Lẩu mắm</h3>
+          <p class="favorites-panel__item-type">Ẩm thực</p>
+          <a class="favorites-panel__item-link" href="../amthuc/amthuc.html">Xem</a>
+        </article>
+        <article class="favorites-panel__item" data-favorite-item="food-gaumdau" hidden>
+          <h3 class="favorites-panel__item-title">Gà um dâu</h3>
+          <p class="favorites-panel__item-type">Ẩm thực</p>
+          <a class="favorites-panel__item-link" href="../amthuc/amthuc.html">Xem</a>
+        </article>
+        <article class="favorites-panel__item" data-favorite-item="food-lauban" hidden>
+          <h3 class="favorites-panel__item-title">Lẩu bần</h3>
+          <p class="favorites-panel__item-type">Ẩm thực</p>
+          <a class="favorites-panel__item-link" href="../amthuc/amthuc.html">Xem</a>
+        </article>
+        <article class="favorites-panel__item" data-favorite-item="food-banhtet" hidden>
+          <h3 class="favorites-panel__item-title">Bánh tét lá cẩm</h3>
+          <p class="favorites-panel__item-type">Ẩm thực</p>
+          <a class="favorites-panel__item-link" href="../amthuc/amthuc.html">Xem</a>
+        </article>
+        <article class="favorites-panel__item" data-favorite-item="stay-vinpearl" hidden>
+          <h3 class="favorites-panel__item-title">Vinpearl Hotel Cần Thơ</h3>
+          <p class="favorites-panel__item-type">Lưu trú</p>
+          <a class="favorites-panel__item-link" href="../luutru/vinpearl.html">Xem</a>
+        </article>
+        <article class="favorites-panel__item" data-favorite-item="stay-ttc" hidden>
+          <h3 class="favorites-panel__item-title">TTC Hotel Premium Cần Thơ</h3>
+          <p class="favorites-panel__item-type">Lưu trú</p>
+          <a class="favorites-panel__item-link" href="../luutru/ttc.html">Xem</a>
+        </article>
+        <article class="favorites-panel__item" data-favorite-item="stay-green" hidden>
+          <h3 class="favorites-panel__item-title">Green Village Mekong</h3>
+          <p class="favorites-panel__item-type">Lưu trú</p>
+          <a class="favorites-panel__item-link" href="../luutru/green.html">Xem</a>
+        </article>
+        <article class="favorites-panel__item" data-favorite-item="stay-mekong" hidden>
+          <h3 class="favorites-panel__item-title">Mekong Rustic Cần Thơ</h3>
+          <p class="favorites-panel__item-type">Lưu trú</p>
+          <a class="favorites-panel__item-link" href="../luutru/mekong.html">Xem</a>
+        </article>
+      </div>
+    </section>
+  </div>
+
+  <footer class="footer">
       <div class="footer-content">
         <div class="footer-brand">
           <h2>CanTho Travel</h2>
@@ -300,12 +477,8 @@
     </footer>
 <button class="button button--primary button--back-to-top" type="button" data-back-to-top>↑</button>
 
-  <!-- JavaScript -->
+  <!-- Liên kết JavaScript -->
   <script src="../js/main.js"></script>
   <script src="lichtrinh.js"></script>
 </body>
 </html>
-
-
-
-

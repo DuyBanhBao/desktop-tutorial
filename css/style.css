@@ -38,13 +38,18 @@
   box-sizing: border-box;
 }
 
+/* Luôn ẩn phần tử có thuộc tính hidden dù component có display riêng. */
+[hidden] {
+  display: none !important;
+}
+
 html {
   min-height: 100%;
   scroll-behavior: smooth;
 }
 
 body {
-  /* Sticky footer: body la cot doc, footer se nam cuoi man hinh khi noi dung ngan. */
+  /* Body là cột dọc để footer nằm cuối màn hình khi nội dung ngắn. */
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -151,7 +156,8 @@ img {
 }
 
 .navbar__action {
-  /* Nut icon sau khi dang nhap: Hanh trinh va Yeu thich. */
+  /* Nút mở danh sách yêu thích sau khi đăng nhập. */
+  position: relative;
   width: 34px;
   height: 34px;
   display: inline-flex;
@@ -167,6 +173,124 @@ img {
   line-height: 1;
   padding: 0;
   transition: var(--transition-base);
+}
+
+.navbar__favorite-badge {
+  position: absolute;
+  top: -6px;
+  right: -7px;
+  min-width: 19px;
+  height: 19px;
+  padding: 0 5px;
+  border: 2px solid var(--color-primary);
+  border-radius: 999px;
+  background: var(--color-danger);
+  color: var(--color-white);
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 15px;
+  text-align: center;
+}
+
+.navbar__user {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: auto;
+}
+
+.navbar__user--hidden {
+  display: none !important;
+}
+
+.navbar__account {
+  position: relative;
+}
+
+.navbar__account-trigger {
+  min-height: 38px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  max-width: 190px;
+  padding: 6px 12px;
+  border: 1px solid rgba(255, 255, 255, 0.65);
+  border-radius: var(--radius-md);
+  background: transparent;
+  color: var(--color-white);
+  cursor: pointer;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.navbar__user-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.navbar__account-arrow {
+  font-size: 11px;
+  transition: transform var(--transition-base);
+}
+
+.navbar__account-menu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  z-index: 50;
+  min-width: 140px;
+  padding: 8px;
+  border-radius: var(--radius-md);
+  background: var(--color-white);
+  box-shadow: var(--shadow-card);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-6px);
+  transition: var(--transition-base);
+}
+
+.navbar__account:hover .navbar__account-menu,
+.navbar__account:focus-within .navbar__account-menu,
+.navbar__account--open .navbar__account-menu {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.navbar__account:hover .navbar__account-arrow,
+.navbar__account:focus-within .navbar__account-arrow,
+.navbar__account--open .navbar__account-arrow {
+  transform: rotate(180deg);
+}
+
+.navbar__logout {
+  width: 100%;
+  min-height: 38px;
+  padding: 7px 10px;
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--color-text);
+  cursor: pointer;
+  font: inherit;
+  font-size: 14px;
+  text-align: left;
+}
+
+.navbar__account-trigger:hover,
+.navbar__account-trigger:focus-visible {
+  background: var(--color-white);
+  color: var(--color-primary);
+  outline: none;
+}
+
+.navbar__logout:hover,
+.navbar__logout:focus-visible {
+  background: var(--color-info-bg);
+  color: var(--color-primary-dark);
+  outline: none;
 }
 
 .navbar__action-icon {
@@ -275,6 +399,18 @@ img {
 .button--outline:hover,
 .button--outline:focus-visible {
   background: var(--color-primary);
+  color: var(--color-white);
+}
+
+.button--light {
+  border-color: var(--color-white);
+  background: var(--color-white);
+  color: var(--color-primary-dark);
+}
+
+.button--light:hover,
+.button--light:focus-visible {
+  background: transparent;
   color: var(--color-white);
 }
 
@@ -446,13 +582,31 @@ img {
   transition: var(--transition-base);
 }
 
+.listing-card__link {
+  display: block;
+  height: 100%;
+  color: inherit;
+  text-decoration: none;
+}
+
+.listing-card__link:focus-visible {
+  outline: 3px solid var(--color-primary);
+  outline-offset: -3px;
+}
+
 .favorite-card {
-  /* Card co position relative de nut trai tim nam o goc card. */
+  /* Card có position relative để nút trái tim nằm ở góc card. */
+  position: relative;
+}
+
+.khampha-card,
+.amthuc-card,
+.luutru-card {
   position: relative;
 }
 
 .favorite-button {
-  /* Nut yeu thich duoc them bang JS tren cac card dia diem/mon an/luu tru. */
+  /* Nút yêu thích đã được viết sẵn trong HTML. */
   position: absolute;
   top: 12px;
   right: 12px;
@@ -612,7 +766,7 @@ img {
 }
 
 .favorites-panel--hidden {
-  /* Panel yeu thich chi hien khi nguoi dung bam icon trai tim tren navbar. */
+/* Danh sách yêu thích chỉ hiện khi người dùng bấm biểu tượng trên navbar. */
   display: none;
 }
 
@@ -659,7 +813,11 @@ img {
   text-decoration: none;
 }
 
-@media (max-width: 768px) {
+.modal-open {
+  overflow: hidden;
+}
+
+@media (max-width: 900px) {
   .navbar {
     position: relative;
     flex-direction: row;
@@ -716,6 +874,41 @@ img {
     justify-content: center;
   }
 
+  .navbar__user {
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-left: 0;
+  }
+
+  .navbar__account-trigger {
+    max-width: min(100%, 260px);
+  }
+
+  .navbar__account {
+    width: min(100%, 260px);
+  }
+
+  .navbar__account-trigger {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .navbar__account-menu {
+    position: static;
+    display: none;
+    margin-top: 6px;
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+  }
+
+  .navbar__account:hover .navbar__account-menu,
+  .navbar__account:focus-within .navbar__account-menu,
+  .navbar__account--open .navbar__account-menu {
+    display: block;
+    transform: none;
+  }
+
   .menu ul li a {
     display: flex;
     align-items: center;
@@ -746,5 +939,16 @@ img {
   .footer-content {
     flex-direction: column;
     text-align: center;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
   }
 }

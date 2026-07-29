@@ -1,5 +1,5 @@
+// Xử lý tìm kiếm tour, hành trình và form đặt tour.
 (() => {
-  // Lay cac ham dung chung tu main.js de khong viet lap lai.
   const {
     clearFormError,
     emailPattern,
@@ -11,16 +11,15 @@
     setFormError,
   } = window.CanThoUI;
 
-  // Gom cac thanh phan DOM can dung tren trang Lich trinh.
   const tourCards = document.querySelectorAll(".tour-card");
   const previewTourCards = document.querySelectorAll(".tour-preview > .tour-card");
-  const tourPreview = document.querySelector(".tour-preview");
   const searchInput = document.querySelector("#search");
   const durationFilter = document.querySelector("#durationFilter");
   const sortFilter = document.querySelector("#sortFilter");
   const filterButton = document.querySelector("#filterBtn");
+  const noResultText = document.querySelector("[data-tour-empty]");
   const journeyPanel = document.querySelector("[data-journey-panel]");
-  const journeyList = document.querySelector("[data-journey-list]");
+  const journeyItems = document.querySelectorAll("[data-journey-item]");
   const journeyEmpty = document.querySelector("[data-journey-empty]");
   const clearJourneyButton = document.querySelector("[data-clear-journey]");
   const openBookingButton = document.querySelector("[data-open-booking]");
@@ -31,301 +30,263 @@
   const emailInput = document.querySelector("#email");
   const phoneInput = document.querySelector("#phone");
   const termsInput = document.querySelector("#bookingTerms");
+  let bookingTrigger = null;
 
-  // Dat timeline ngay sau card dang duoc xem chi tiet.
-  const placeTimelineAfterCard = (card, timeline) => {
-    if (card && timeline) {
-      card.insertAdjacentElement("afterend", timeline);
+  // Đọc mã tour từ localStorage và hỗ trợ dữ liệu cũ dạng object.
+  const readJourneyIds = () => {
+    const savedJourney = readList(journeyKey);
+    const journeyIds = [];
+
+    for (const item of savedJourney) {
+      const tourId = typeof item === "string" ? item : item.id;
+      if (tourId && !journeyIds.includes(tourId)) {
+        journeyIds.push(tourId);
+      }
+    }
+
+    return journeyIds;
+  };
+
+  // Ẩn tất cả timeline trước khi mở timeline mới.
+  const closeAllTimelines = () => {
+    const timelines = document.querySelectorAll(".timeline");
+    for (const timeline of timelines) {
+      timeline.classList.add("timeline-hidden");
     }
   };
 
-  // Khi loc/sap xep xong, dua cac timeline ve lai dung vi tri sau card goc.
-  const restorePreviewTimelinePositions = () => {
-    previewTourCards.forEach((card) => {
-      const timeline = document.getElementById(card.dataset.target);
-      placeTimelineAfterCard(card, timeline);
-    });
-  };
-
-  // An tat ca timeline truoc khi mo timeline moi.
-  const closeAllTimelines = () => {
-    document.querySelectorAll(".timeline").forEach((timeline) => {
-      timeline.classList.add("timeline-hidden");
-    });
-  };
-
-  // Mo timeline cua tour duoc bam "Xem chi tiet".
+  // Mở timeline đã hardcode ngay sau card tương ứng.
   const openTimeline = (card) => {
-    const targetTimeline = document.getElementById(card.dataset.target);
+    const targetTimeline = card ? document.getElementById(card.dataset.target) : null;
 
     if (!targetTimeline) {
       return;
     }
 
     closeAllTimelines();
-    placeTimelineAfterCard(card, targetTimeline);
     targetTimeline.classList.remove("timeline-hidden");
     targetTimeline.scrollIntoView({ behavior: "smooth", block: "start" });
   };
 
-  // Loc tour theo tu khoa va so ngay.
+  // Lọc tour theo từ khóa và số ngày.
   const filterTours = () => {
     const keyword = searchInput.value.trim().toLowerCase();
     const duration = durationFilter.value;
+    let visibleCount = 0;
 
-    tourCards.forEach((card) => {
-      const cardDuration = card.dataset.duration;
-      const matchKeyword = keyword === "" || card.textContent.toLowerCase().includes(keyword);
-      const matchDuration = duration === "" || cardDuration === duration;
+    for (const card of tourCards) {
+      const matchKeyword = !keyword || card.textContent.toLowerCase().includes(keyword);
+      const matchDuration = !duration || card.dataset.duration === duration;
+      const isVisible = matchKeyword && matchDuration;
 
-      card.style.display = matchKeyword && matchDuration ? "block" : "none";
-    });
+      card.hidden = !isVisible;
+      if (isVisible && card.closest(".tour-preview")) {
+        visibleCount += 1;
+      }
+    }
+
+    if (noResultText) {
+      noResultText.hidden = visibleCount > 0;
+    }
 
     closeAllTimelines();
-    restorePreviewTimelinePositions();
   };
 
-  // Sap xep tour theo gia nhung van giu timeline di kem dung card.
+  // So sánh hai card theo mức giá đang chọn.
+  const compareTourPrice = (firstCard, secondCard) => {
+    const firstPrice = Number(firstCard.dataset.price || 0);
+    const secondPrice = Number(secondCard.dataset.price || 0);
+    return sortFilter.value === "priceAsc" ? firstPrice - secondPrice : secondPrice - firstPrice;
+  };
+
+  // Sắp xếp card bằng thuộc tính CSS order, không thay đổi cây DOM.
   const sortTours = () => {
-    if (!tourPreview || !sortFilter.value) {
+    if (!sortFilter.value) {
+      for (let index = 0; index < previewTourCards.length; index += 1) {
+        const card = previewTourCards[index];
+        const timeline = document.getElementById(card.dataset.target);
+        card.style.order = String(index * 2);
+        if (timeline) {
+          timeline.style.order = String(index * 2 + 1);
+        }
+      }
       return;
     }
 
-    const cards = Array.from(tourPreview.querySelectorAll(".tour-card"));
+    const sortedCards = Array.from(previewTourCards);
+    sortedCards.sort(compareTourPrice);
 
-    cards.sort((firstCard, secondCard) => {
-      const firstPrice = Number(firstCard.dataset.price || 0);
-      const secondPrice = Number(secondCard.dataset.price || 0);
-
-      return sortFilter.value === "priceAsc"
-        ? firstPrice - secondPrice
-        : secondPrice - firstPrice;
-    });
-
-    cards.forEach((card) => {
+    for (let index = 0; index < sortedCards.length; index += 1) {
+      const card = sortedCards[index];
       const timeline = document.getElementById(card.dataset.target);
-
+      card.style.order = String(index * 2);
       if (timeline) {
-        timeline.classList.add("timeline-hidden");
+        timeline.style.order = String(index * 2 + 1);
       }
+    }
 
-      tourPreview.append(card);
-      placeTimelineAfterCard(card, timeline);
-    });
+    closeAllTimelines();
   };
 
-  // Lay thong tin tour tu HTML da hardcode san.
-  const getTourInfo = (card) => {
-    const title = card.querySelector(".card__title");
-    const image = card.querySelector(".tour-card__image");
-    const text = card.querySelector(".tour-card__text");
-    const details = card.querySelectorAll("span");
-
-    return {
-      id: card.dataset.target,
-      title: title ? title.textContent.trim() : "Tour Cần Thơ",
-      image: image ? image.getAttribute("src") : "",
-      text: text ? text.textContent.trim() : "",
-      duration: details[0] ? details[0].textContent.trim() : "",
-      price: details[1] ? details[1].textContent.trim() : "",
-    };
-  };
-
-  // Tao mot dong tour trong panel Hanh trinh bang DOM API, khong dung innerHTML.
-  const createJourneyItem = (tour) => {
-    const item = document.createElement("article");
-    const image = document.createElement("img");
-    const body = document.createElement("div");
-    const title = document.createElement("h3");
-    const text = document.createElement("p");
-    const duration = document.createElement("p");
-    const price = document.createElement("p");
-    const removeButton = document.createElement("button");
-
-    item.className = "journey-panel__item";
-    image.className = "journey-panel__image";
-    body.className = "journey-panel__body";
-    title.className = "journey-panel__item-title";
-    text.className = "journey-panel__item-text";
-    duration.className = "journey-panel__item-meta";
-    price.className = "journey-panel__item-meta";
-    removeButton.className = "button button--outline journey-panel__remove";
-
-    image.src = tour.image;
-    image.alt = tour.title;
-    title.textContent = tour.title;
-    text.textContent = tour.text;
-    duration.textContent = tour.duration;
-    price.textContent = tour.price;
-    removeButton.type = "button";
-    removeButton.dataset.removeJourney = tour.id;
-    removeButton.textContent = "Xóa";
-
-    body.append(title, text, duration, price, removeButton);
-    item.append(image, body);
-    return item;
-  };
-
-  // Ve lai panel Hanh trinh dua tren danh sach trong localStorage.
+  // Hiển thị các tour trong hành trình bằng những dòng đã hardcode.
   const renderJourney = () => {
-    const journey = readList(journeyKey);
+    const journeyIds = readJourneyIds();
 
-    journeyList.textContent = "";
-    journeyEmpty.hidden = journey.length > 0;
-    openBookingButton.disabled = journey.length === 0;
-    clearJourneyButton.disabled = journey.length === 0;
+    for (const item of journeyItems) {
+      item.hidden = !journeyIds.includes(item.dataset.journeyItem);
+    }
 
-    journey.forEach((tour) => {
-      journeyList.append(createJourneyItem(tour));
-    });
+    journeyEmpty.hidden = journeyIds.length > 0;
+    openBookingButton.disabled = journeyIds.length === 0;
+    clearJourneyButton.disabled = journeyIds.length === 0;
   };
 
-  // Cuon den panel Hanh trinh sau khi them tour hoac bam icon tren navbar.
+  // Cuộn đến khu vực hành trình.
   const openJourneyPanel = () => {
     renderJourney();
     journeyPanel.scrollIntoView({ behavior: "smooth", block: "start" });
   };
 
-  // Them tour vao Hanh trinh, neu tour da co thi khong them trung.
+  // Thêm mã tour vào hành trình nếu chưa có.
   const addTourToJourney = (card) => {
-    if (!requireLogin()) {
+    if (!card || !requireLogin()) {
       return;
     }
 
-    const tour = getTourInfo(card);
-    const journey = readList(journeyKey);
-    const isAdded = journey.some((item) => item.id === tour.id);
+    const journeyIds = readJourneyIds();
+    const tourId = card.dataset.target;
 
-    if (!isAdded) {
-      journey.push(tour);
-      saveList(journeyKey, journey);
+    if (!journeyIds.includes(tourId)) {
+      journeyIds.push(tourId);
+      saveList(journeyKey, journeyIds);
     }
 
     openJourneyPanel();
   };
 
-  // Xoa mot tour khoi Hanh trinh.
+  // Xóa một mã tour khỏi hành trình.
   const removeTourFromJourney = (tourId) => {
-    const journey = readList(journeyKey).filter((tour) => tour.id !== tourId);
-    saveList(journeyKey, journey);
+    const journeyIds = readJourneyIds();
+    const foundIndex = journeyIds.indexOf(tourId);
+
+    if (foundIndex >= 0) {
+      journeyIds.splice(foundIndex, 1);
+      saveList(journeyKey, journeyIds);
+    }
+
     renderJourney();
   };
 
-  // Dien thong tin nguoi dang nhap vao form dat tour.
+  // Điền thông tin tài khoản vào form đặt tour.
   const fillAccountInfo = () => {
     const user = getCurrentUser();
-
-    if (!user) {
-      return;
+    if (user) {
+      nameInput.value = user.name;
+      emailInput.value = user.email;
+      phoneInput.value = user.phone;
     }
-
-    nameInput.value = user.name;
-    emailInput.value = user.email;
-    phoneInput.value = user.phone;
   };
 
-  // Xoa form khi nguoi dung muon nhap thong tin moi.
+  // Xóa thông tin để người dùng nhập dữ liệu mới.
   const clearBookingInfo = () => {
     nameInput.value = "";
     emailInput.value = "";
     phoneInput.value = "";
   };
 
-  // Chuyen giua 2 cach dat tour: dung thong tin dang nhap hoac thong tin moi.
+  // Chuyển cách điền thông tin đặt tour.
   const updateBookingInfoMode = () => {
-    const selectedMode = bookingForm.elements.bookingInfoMode.value;
-
-    if (selectedMode === "account") {
+    if (bookingForm.elements.bookingInfoMode.value === "account") {
       fillAccountInfo();
-      return;
+    } else {
+      clearBookingInfo();
     }
-
-    clearBookingInfo();
   };
 
-  // Chi cho mo modal dat tour khi da dang nhap va co it nhat mot tour trong Hanh trinh.
+  // Mở modal đặt tour khi đã đăng nhập và có hành trình.
   const openBookingModal = () => {
     if (!requireLogin()) {
       return;
     }
 
-    if (readList(journeyKey).length === 0) {
+    if (readJourneyIds().length === 0) {
       alert("Vui lòng thêm ít nhất một tour vào hành trình.");
       return;
     }
 
+    bookingTrigger = document.activeElement;
     bookingModal.classList.remove("timeline-hidden");
+    document.body.classList.add("modal-open");
     updateBookingInfoMode();
     nameInput.focus();
   };
 
-  // Dong modal dat tour.
+  // Đóng modal đặt tour và trả focus về nút mở.
   const closeBookingModal = () => {
     bookingModal.classList.add("timeline-hidden");
+    document.body.classList.remove("modal-open");
+    if (bookingTrigger) {
+      bookingTrigger.focus();
+    }
   };
 
-  // Cac ham validate rieng cho form dat tour.
+  // Kiểm tra họ tên trong form đặt tour.
   const validateName = () => {
     if (nameInput.value.trim().length < 2) {
       setFormError(nameInput, "Vui lòng nhập họ tên.");
       return false;
     }
-
     clearFormError(nameInput);
     return true;
   };
 
+  // Kiểm tra email trong form đặt tour.
   const validateEmail = () => {
     if (!emailPattern.test(emailInput.value.trim())) {
       setFormError(emailInput, "Vui lòng nhập email hợp lệ.");
       return false;
     }
-
     clearFormError(emailInput);
     return true;
   };
 
+  // Kiểm tra số điện thoại trong form đặt tour.
   const validatePhone = () => {
     if (!/^0\d{9}$/.test(phoneInput.value.trim())) {
       setFormError(phoneInput, "Số điện thoại phải gồm 10 số và bắt đầu bằng 0.");
       return false;
     }
-
     clearFormError(phoneInput);
     return true;
   };
 
+  // Kiểm tra điều khoản đặt tour.
   const validateTerms = () => {
     const errorElement = document.querySelector("#bookingTerms-error");
-
     if (!termsInput.checked) {
       termsInput.setAttribute("aria-invalid", "true");
       errorElement.textContent = "Bạn cần đồng ý với Điều khoản sử dụng.";
       return false;
     }
-
     termsInput.removeAttribute("aria-invalid");
     errorElement.textContent = "";
     return true;
   };
 
-  // Xu ly dat tour thanh cong: thong bao, xoa hanh trinh va reset form.
+  // Kiểm tra form, thông báo đặt tour và xóa hành trình đã đặt.
   const submitBooking = (event) => {
     event.preventDefault();
 
-    const isValid = [
-      validateName(),
-      validateEmail(),
-      validatePhone(),
-      validateTerms(),
-    ].every(Boolean);
-
+    const isValid = [validateName(), validateEmail(), validatePhone(), validateTerms()].every(Boolean);
     if (!isValid) {
+      const firstError = bookingForm.querySelector('[aria-invalid="true"]');
+      if (firstError) {
+        firstError.focus();
+      }
       return;
     }
 
-    const journeyCount = readList(journeyKey).length;
-
+    const journeyCount = readJourneyIds().length;
     alert(`Đặt tour thành công! Hành trình của bạn có ${journeyCount} tour.`);
     saveList(journeyKey, []);
     bookingForm.reset();
@@ -333,69 +294,98 @@
     renderJourney();
   };
 
-  // Dung event delegation cho cac nut tren card/timeline/hanh trinh.
-  document.addEventListener("click", (event) => {
+  // Xử lý các nút chi tiết, thêm tour, đóng timeline và xóa tour.
+  const handleDocumentClick = (event) => {
     const detailButton = event.target.closest(".btn-detail");
-    const addJourneyButton = event.target.closest(".btn-add-journey");
+    const addButton = event.target.closest(".btn-add-journey");
     const closeTimelineButton = event.target.closest(".btn-close-timeline");
-    const removeJourneyButton = event.target.closest("[data-remove-journey]");
+    const removeButton = event.target.closest("[data-remove-journey]");
 
     if (detailButton) {
       openTimeline(detailButton.closest(".tour-card"));
-      return;
-    }
-
-    if (addJourneyButton) {
-      addTourToJourney(addJourneyButton.closest(".tour-card"));
-      return;
-    }
-
-    if (closeTimelineButton) {
+    } else if (addButton) {
+      addTourToJourney(addButton.closest(".tour-card"));
+    } else if (closeTimelineButton) {
       closeTimelineButton.closest(".timeline").classList.add("timeline-hidden");
+    } else if (removeButton) {
+      removeTourFromJourney(removeButton.dataset.removeJourney);
+    }
+  };
+
+  // Xóa toàn bộ hành trình sau khi người dùng xác nhận.
+  const clearJourney = () => {
+    if (window.confirm("Bạn có muốn xóa toàn bộ hành trình không?")) {
+      saveList(journeyKey, []);
+      renderJourney();
+    }
+  };
+
+  // Cập nhật cách điền thông tin khi đổi lựa chọn.
+  const handleBookingChange = (event) => {
+    if (event.target.name === "bookingInfoMode") {
+      updateBookingInfoMode();
+    }
+  };
+
+  // Chỉ giữ tối đa 10 chữ số trong ô điện thoại.
+  const handlePhoneInput = () => {
+    phoneInput.value = phoneInput.value.replace(/\D/g, "").slice(0, 10);
+    if (phoneInput.value) {
+      validatePhone();
+    }
+  };
+
+  // Đóng modal khi bấm vào lớp nền.
+  const handleBookingBackdrop = (event) => {
+    if (event.target === bookingModal) {
+      closeBookingModal();
+    }
+  };
+
+  // Đóng modal bằng Escape và giữ focus trong modal khi bấm Tab.
+  const handleBookingKeydown = (event) => {
+    if (bookingModal.classList.contains("timeline-hidden")) {
       return;
     }
 
-    if (removeJourneyButton) {
-      removeTourFromJourney(removeJourneyButton.dataset.removeJourney);
+    if (event.key === "Escape") {
+      closeBookingModal();
+      return;
     }
-  });
 
-  // Cac su kien rieng cho loc, sap xep, form va modal.
+    if (event.key === "Tab") {
+      const focusable = bookingModal.querySelectorAll("button:not([disabled]), input:not([disabled])");
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    }
+  };
+
+  document.addEventListener("click", handleDocumentClick);
   filterButton.addEventListener("click", filterTours);
   searchInput.addEventListener("input", filterTours);
   durationFilter.addEventListener("change", filterTours);
   sortFilter.addEventListener("change", sortTours);
-  clearJourneyButton.addEventListener("click", () => {
-    saveList(journeyKey, []);
-    renderJourney();
-  });
+  clearJourneyButton.addEventListener("click", clearJourney);
   openBookingButton.addEventListener("click", openBookingModal);
   bookingCloseButton.addEventListener("click", closeBookingModal);
-  bookingForm.addEventListener("change", (event) => {
-    if (event.target.name === "bookingInfoMode") {
-      updateBookingInfoMode();
-    }
-  });
+  bookingForm.addEventListener("change", handleBookingChange);
   bookingForm.addEventListener("submit", submitBooking);
-  phoneInput.addEventListener("input", () => {
-    // Chi giu chu so va toi da 10 so, khong tac dong den cau truc HTML.
-    phoneInput.value = phoneInput.value.replace(/\D/g, "").slice(0, 10);
-    if (phoneInput.value.trim() !== "") {
-      validatePhone();
-    }
-  });
-  bookingModal.addEventListener("click", (event) => {
-    if (event.target === bookingModal) {
-      closeBookingModal();
-    }
-  });
+  phoneInput.addEventListener("input", handlePhoneInput);
+  bookingModal.addEventListener("click", handleBookingBackdrop);
+  document.addEventListener("keydown", handleBookingKeydown);
   document.addEventListener("cantho:openJourney", openJourneyPanel);
 
-  // Neu vao trang bang link #journey thi mo ngay panel Hanh trinh.
   if (window.location.hash === "#journey") {
     openJourneyPanel();
   }
 
-  // Ve trang thai Hanh trinh ban dau khi trang vua tai.
+  sortTours();
   renderJourney();
 })();

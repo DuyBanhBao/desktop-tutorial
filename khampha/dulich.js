@@ -1,5 +1,5 @@
+// Tìm kiếm các địa điểm trên trang Khám phá.
 (() => {
-  // Lay cac thanh phan tim kiem tren trang Kham pha.
   const searchInput = document.querySelector("#destinationSearch");
   const searchButton = document.querySelector(".khampha-search__button");
   const cards = document.querySelectorAll(".khampha-card");
@@ -9,19 +9,30 @@
     return;
   }
 
-  // Loc card dua tren data-name da gan san trong HTML.
+  // Chuyển chữ có dấu thành chữ không dấu để tìm kiếm dễ hơn.
+  const normalizeText = (value) =>
+    value
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .replace(/đ/g, "d")
+      .toLowerCase();
+
+  // Ẩn hoặc hiện card theo từ khóa tìm kiếm.
   const filterDestinations = () => {
-    const keyword = searchInput.value.trim().toLowerCase();
+    const keyword = normalizeText(searchInput.value.trim());
     let visibleCount = 0;
 
-    cards.forEach((card) => {
-      const name = card.getAttribute("data-name") || "";
+    for (const card of cards) {
+      const name = normalizeText(card.getAttribute("data-name") || "");
       const matches = name.includes(keyword);
-      card.classList.toggle("khampha-card--hidden", !matches);
-      if (matches) visibleCount++;
-    });
 
-    noResultText.style.display = visibleCount === 0 ? "block" : "none";
+      card.classList.toggle("khampha-card--hidden", !matches);
+      if (matches) {
+        visibleCount += 1;
+      }
+    }
+
+    noResultText.hidden = visibleCount > 0;
   };
 
   searchInput.addEventListener("input", filterDestinations);

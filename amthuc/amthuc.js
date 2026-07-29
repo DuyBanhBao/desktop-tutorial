@@ -1,17 +1,18 @@
+// Điều khiển modal chi tiết món ăn.
 (() => {
-  // Lay cac thanh phan cua modal am thuc.
   const modal = document.querySelector("#foodModal");
   const modalImage = document.querySelector("#foodModalImage");
   const modalTitle = document.querySelector("#foodModalTitle");
   const modalText = document.querySelector("#foodModalText");
   const closeButton = document.querySelector(".amthuc-modal__close");
   const grid = document.querySelector(".amthuc-grid");
+  let activeCard = null;
 
   if (!modal || !modalImage || !modalTitle || !modalText || !closeButton || !grid) {
     return;
   }
 
-  // Lay thong tin mon an truc tiep tu card HTML de tranh lap du lieu trong JS.
+  // Lấy nội dung món ăn từ card đã hardcode trong HTML.
   const getFoodInfo = (card) => {
     const image = card.querySelector(".amthuc-card__image");
     const title = card.querySelector(".amthuc-card__title");
@@ -24,37 +25,41 @@
     };
   };
 
-  // Do du lieu card vao modal va hien modal.
+  // Điền nội dung vào modal và hiển thị món ăn được chọn.
   const openFoodModal = (card) => {
     const food = getFoodInfo(card);
+    activeCard = card;
 
     modalImage.src = food.image;
     modalImage.alt = food.title;
     modalTitle.textContent = food.title;
     modalText.textContent = food.text;
     modal.classList.add("is-open");
+    document.body.classList.add("modal-open");
     closeButton.focus();
   };
 
-  // An modal khi nguoi dung dong.
+  // Đóng modal và trả focus về card đã mở.
   const closeFoodModal = () => {
     modal.classList.remove("is-open");
+    document.body.classList.remove("modal-open");
+    if (activeCard) {
+      activeCard.focus();
+    }
   };
 
-  // Dung event delegation: chi can lang nghe click tren grid thay vi tung card.
-  grid.addEventListener("click", (event) => {
+  // Mở modal khi bấm card nhưng bỏ qua nút yêu thích.
+  const handleGridClick = (event) => {
     const favoriteButton = event.target.closest("[data-favorite-button]");
     const card = event.target.closest(".amthuc-card[data-food]");
 
-    if (!card || favoriteButton) {
-      return;
+    if (card && !favoriteButton) {
+      openFoodModal(card);
     }
+  };
 
-    openFoodModal(card);
-  });
-
-  // Ho tro mo modal bang ban phim cho card co tabindex.
-  grid.addEventListener("keydown", (event) => {
+  // Hỗ trợ mở card bằng phím Enter hoặc Space.
+  const handleGridKeydown = (event) => {
     const card = event.target.closest(".amthuc-card[data-food]");
 
     if (!card || (event.key !== "Enter" && event.key !== " ")) {
@@ -63,19 +68,32 @@
 
     event.preventDefault();
     openFoodModal(card);
-  });
+  };
 
-  closeButton.addEventListener("click", closeFoodModal);
-
-  modal.addEventListener("click", (event) => {
+  // Đóng modal khi bấm vào lớp nền.
+  const handleModalClick = (event) => {
     if (event.target === modal) {
       closeFoodModal();
     }
-  });
+  };
 
-  window.addEventListener("keydown", (event) => {
-    if (event.key === "Escape" && modal.classList.contains("is-open")) {
-      closeFoodModal();
+  // Đóng modal bằng Escape và giữ phím Tab trong modal.
+  const handleModalKeydown = (event) => {
+    if (!modal.classList.contains("is-open")) {
+      return;
     }
-  });
+
+    if (event.key === "Escape") {
+      closeFoodModal();
+    } else if (event.key === "Tab") {
+      event.preventDefault();
+      closeButton.focus();
+    }
+  };
+
+  grid.addEventListener("click", handleGridClick);
+  grid.addEventListener("keydown", handleGridKeydown);
+  closeButton.addEventListener("click", closeFoodModal);
+  modal.addEventListener("click", handleModalClick);
+  document.addEventListener("keydown", handleModalKeydown);
 })();

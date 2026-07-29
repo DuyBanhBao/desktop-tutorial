@@ -1,13 +1,16 @@
+// Khởi tạo các chức năng dùng chung cho toàn bộ website.
 (() => {
-  // Cac key dung chung de luu trang thai website vao localStorage.
   const loginFlagKey = "canthoLoggedIn";
   const userNameKey = "canthoUserName";
   const userEmailKey = "canthoUserEmail";
   const userPhoneKey = "canthoUserPhone";
+  const accountKey = "canthoAccount";
   const favoriteKey = "canthoFavorites";
   const journeyKey = "canthoJourney";
+  const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
+  let favoritePanelTrigger = null;
 
-  // Lay the hien thi loi dua tren id cua input, vi du: email -> email-error.
+  // Tìm vùng hiển thị lỗi tương ứng với một ô nhập.
   const getErrorElement = (input) => {
     if (!input || !input.id) {
       return null;
@@ -16,7 +19,7 @@
     return document.querySelector(`#${input.id}-error`);
   };
 
-  // Hien thi loi cho input va gan aria-invalid de form de truy cap hon.
+  // Hiển thị lỗi và đánh dấu ô nhập không hợp lệ.
   const setFormError = (input, message) => {
     const errorElement = getErrorElement(input);
 
@@ -29,7 +32,7 @@
     errorElement.textContent = message;
   };
 
-  // Xoa trang thai loi khi nguoi dung sua dung du lieu.
+  // Xóa thông báo lỗi khi dữ liệu đã hợp lệ.
   const clearFormError = (input) => {
     const errorElement = getErrorElement(input);
 
@@ -42,7 +45,7 @@
     errorElement.textContent = "";
   };
 
-  // Doi trang thai nut submit khi dang xu ly form.
+  // Đổi trạng thái nút submit trong lúc xử lý form.
   const setLoadingState = (button, textElement, isLoading, loadingText, defaultText) => {
     if (!button || !textElement) {
       return;
@@ -53,62 +56,85 @@
     textElement.textContent = isLoading ? loadingText : defaultText;
   };
 
-  // Toast chi can them class, CSS se phu trach phan hien thi.
+  // Hiển thị thông báo thành công.
   const showToast = (toast) => {
     if (toast) {
       toast.classList.add("is-visible");
     }
   };
 
-  // Dung chung cho nut hien/an mat khau o trang dang nhap va dang ky.
-  const initPasswordToggles = (buttons, getInput) => {
-    buttons.forEach((button) => {
-      if (!button) {
-        return;
-      }
+  // Bật hoặc tắt hiển thị mật khẩu.
+  const togglePassword = (button, input) => {
+    if (!button || !input) {
+      return;
+    }
 
-      button.addEventListener("click", () => {
-        const input = getInput(button);
+    const icon = button.querySelector("i");
+    const isVisible = input.type === "text";
 
-        if (!input) {
-          return;
-        }
+    input.type = isVisible ? "password" : "text";
+    button.setAttribute("aria-label", isVisible ? "Hiện mật khẩu" : "Ẩn mật khẩu");
 
-        const icon = button.querySelector("i");
-        const isPasswordVisible = input.type === "text";
+    if (icon) {
+      icon.classList.toggle("fa-eye", isVisible);
+      icon.classList.toggle("fa-eye-slash", !isVisible);
+    }
 
-        input.type = isPasswordVisible ? "password" : "text";
-        button.setAttribute(
-          "aria-label",
-          isPasswordVisible ? "Hiện mật khẩu" : "Ẩn mật khẩu"
-        );
-
-        if (icon) {
-          icon.classList.toggle("fa-eye", isPasswordVisible);
-          icon.classList.toggle("fa-eye-slash", !isPasswordVisible);
-        }
-
-        input.focus();
-      });
-    });
+    input.focus();
   };
 
-  // Doc danh sach tu localStorage. Neu du lieu loi thi tra ve mang rong de web khong bi dung.
+  // Gắn sự kiện cho các nút hiện và ẩn mật khẩu.
+  const initPasswordToggles = (buttons, getInput) => {
+    for (const button of buttons) {
+      if (!button) {
+        continue;
+      }
+
+      // Xử lý khi người dùng bấm nút hiện hoặc ẩn mật khẩu.
+      const handlePasswordToggle = () => {
+        togglePassword(button, getInput(button));
+      };
+
+      button.addEventListener("click", handlePasswordToggle);
+    }
+  };
+
+  // Đọc một danh sách JSON từ localStorage.
   const readList = (key) => {
     try {
       const value = localStorage.getItem(key);
+      // JSON.parse được đặt trong try/catch để dữ liệu lỗi không làm dừng website.
       return value ? JSON.parse(value) : [];
     } catch {
       return [];
     }
   };
 
-  // Chi danh sach hanh trinh/yeu thich moi duoc luu bang JSON.
+  // Lưu một danh sách vào localStorage dưới dạng JSON.
   const saveList = (key, value) => {
     localStorage.setItem(key, JSON.stringify(value));
   };
 
-  // Dang nhap la dang nhap tinh, nen thong tin nguoi dung duoc lay tu localStorage.
+  // Đọc tài khoản đã đăng ký từ localStorage.
+  const getRegisteredAccount = () => {
+    try {
+      const value = localStorage.getItem(accountKey);
+      return value ? JSON.parse(value) : null;
+    } catch {
+      return null;
+    }
+  };
+
+  // Lưu tài khoản đăng ký để trang đăng nhập có thể kiểm tra.
+  const saveRegisteredAccount = (account) => {
+    // Website tĩnh chỉ mô phỏng tài khoản nên dữ liệu được lưu trong localStorage.
+    localStorage.setItem(accountKey, JSON.stringify(account));
+  };
+
+  // Kiểm tra mật khẩu theo cùng một quy tắc ở đăng ký và đăng nhập.
+  const isValidPassword = (password) => passwordPattern.test(password);
+
+  // Lấy thông tin người dùng đang đăng nhập.
   const getCurrentUser = () => {
     if (localStorage.getItem(loginFlagKey) !== "true") {
       return null;
@@ -121,13 +147,18 @@
     };
   };
 
-  // Xac dinh duong dan tu trang hien tai ve thu muc goc cua website.
+  // Xác định đường dẫn từ trang hiện tại về thư mục gốc.
   const getPagePrefix = () => {
     const folders = ["/home/", "/khampha/", "/amthuc/", "/lichtrinh/", "/luutru/", "/login/"];
-    return folders.some((folder) => window.location.pathname.includes(folder)) ? "../" : "";
+    for (const folder of folders) {
+      if (window.location.pathname.includes(folder)) {
+        return "../";
+      }
+    }
+    return "";
   };
 
-  // Chan cac tinh nang can dang nhap nhu hanh trinh va yeu thich.
+  // Chuyển người dùng đến trang đăng nhập khi tính năng yêu cầu tài khoản.
   const requireLogin = () => {
     if (getCurrentUser()) {
       return true;
@@ -138,356 +169,477 @@
     return false;
   };
 
-  // Sau khi dang nhap, thay link Dang nhap bang 2 nut icon Hanh trinh va Yeu thich.
+  // Xóa trạng thái đăng nhập nhưng vẫn giữ tài khoản đã đăng ký.
+  const logout = () => {
+    localStorage.removeItem(loginFlagKey);
+    localStorage.removeItem(userNameKey);
+    localStorage.removeItem(userEmailKey);
+    localStorage.removeItem(userPhoneKey);
+    window.location.href = `${getPagePrefix()}home/index.html`;
+  };
+
+  // Hiển thị tên người dùng và nút đăng xuất trên navbar.
   const initNavbarByLoginState = () => {
-    const menuList = document.querySelector(".menu ul");
-    const loginLink = document.querySelector('.menu a[href$="login.html"]');
+    const loginItem = document.querySelector("[data-login-item]");
+    const userMenu = document.querySelector("[data-user-menu]");
+    const userName = document.querySelector("[data-user-name]");
+    const logoutButton = document.querySelector("[data-logout]");
+    const accountMenu = document.querySelector("[data-account-menu]");
+    const accountToggle = document.querySelector("[data-account-toggle]");
     const user = getCurrentUser();
 
-    if (!menuList || !loginLink || !user) {
+    if (!loginItem || !userMenu) {
       return;
     }
 
-    const loginItem = loginLink.closest("li");
-    const favoriteItem = document.createElement("li");
-    const favoriteButton = document.createElement("button");
-    const favoriteIcon = document.createElement("img");
+    loginItem.hidden = Boolean(user);
+    userMenu.classList.toggle("navbar__user--hidden", !user);
 
-    favoriteButton.type = "button";
-    favoriteButton.className = "navbar__action";
-    favoriteButton.dataset.openFavorites = "true";
-    favoriteButton.title = "Yêu thích";
-    favoriteButton.setAttribute("aria-label", "Yêu thích");
-    favoriteIcon.className = "navbar__action-icon";
-    favoriteIcon.src = `${getPagePrefix()}assets/icons/love.png`;
-    favoriteIcon.alt = "";
-    favoriteIcon.setAttribute("aria-hidden", "true");
-
-    favoriteButton.append(favoriteIcon);
-    favoriteItem.append(favoriteButton);
-
-    if (loginItem) {
-      loginItem.remove();
+    if (user && userName) {
+      userName.textContent = user.name || user.email;
     }
 
-    menuList.append(favoriteItem);
+    if (logoutButton) {
+      logoutButton.addEventListener("click", logout);
+    }
+
+    if (!accountMenu || !accountToggle) {
+      return;
+    }
+
+    // Mở hoặc đóng menu tài khoản khi bấm tên người dùng.
+    const toggleAccountMenu = () => {
+      const isOpen = accountMenu.classList.toggle("navbar__account--open");
+      accountToggle.setAttribute("aria-expanded", String(isOpen));
+      accountToggle.setAttribute("aria-label", isOpen ? "Đóng menu tài khoản" : "Mở menu tài khoản");
+    };
+
+    // Đóng menu tài khoản khi bấm ra ngoài.
+    const closeAccountMenuOutside = (event) => {
+      if (!accountMenu.contains(event.target)) {
+        accountMenu.classList.remove("navbar__account--open");
+        accountToggle.setAttribute("aria-expanded", "false");
+      }
+    };
+
+    // Đóng menu tài khoản bằng phím Escape.
+    const closeAccountMenuByKeyboard = (event) => {
+      if (event.key === "Escape" && accountMenu.classList.contains("navbar__account--open")) {
+        accountMenu.classList.remove("navbar__account--open");
+        accountToggle.setAttribute("aria-expanded", "false");
+        accountToggle.focus();
+      }
+    };
+
+    accountToggle.addEventListener("click", toggleAccountMenu);
+    document.addEventListener("click", closeAccountMenuOutside);
+    document.addEventListener("keydown", closeAccountMenuByKeyboard);
   };
 
+  // Đóng menu responsive và cập nhật thuộc tính hỗ trợ đọc màn hình.
   const closeResponsiveMenu = (navbar, toggleButton) => {
     navbar.classList.remove("navbar--menu-open");
     toggleButton.setAttribute("aria-expanded", "false");
-    toggleButton.setAttribute("aria-label", "Mo menu dieu huong");
+    toggleButton.setAttribute("aria-label", "Mở menu điều hướng");
   };
 
+  // Mở hoặc đóng menu responsive.
+  const toggleResponsiveMenu = (navbar, toggleButton) => {
+    const isOpen = navbar.classList.toggle("navbar--menu-open");
+    toggleButton.setAttribute("aria-expanded", String(isOpen));
+    toggleButton.setAttribute("aria-label", isOpen ? "Đóng menu điều hướng" : "Mở menu điều hướng");
+  };
+
+  // Gắn các sự kiện cho hamburger menu đã hardcode trong HTML.
   const initResponsiveNavbar = () => {
     const navbar = document.querySelector(".navbar");
     const menu = navbar ? navbar.querySelector(".menu") : null;
+    const toggleButton = navbar ? navbar.querySelector(".navbar__toggle") : null;
 
-    if (!navbar || !menu || navbar.querySelector(".navbar__toggle")) {
+    if (!navbar || !menu || !toggleButton) {
       return;
     }
 
-    const toggleButton = document.createElement("button");
-    const menuId = menu.id || "main-navigation";
-
-    menu.id = menuId;
-    toggleButton.type = "button";
-    toggleButton.className = "navbar__toggle";
-    toggleButton.setAttribute("aria-controls", menuId);
-    toggleButton.setAttribute("aria-expanded", "false");
-    toggleButton.setAttribute("aria-label", "Mo menu dieu huong");
-
-    for (let index = 0; index < 3; index += 1) {
-      const line = document.createElement("span");
-      line.className = "navbar__toggle-line";
-      line.setAttribute("aria-hidden", "true");
-      toggleButton.append(line);
-    }
-
     navbar.classList.add("navbar--has-toggle");
-    navbar.insertBefore(toggleButton, menu);
 
-    toggleButton.addEventListener("click", () => {
-      const isOpen = navbar.classList.toggle("navbar--menu-open");
-      toggleButton.setAttribute("aria-expanded", String(isOpen));
-      toggleButton.setAttribute(
-        "aria-label",
-        isOpen ? "Dong menu dieu huong" : "Mo menu dieu huong"
-      );
-    });
+    // Xử lý nút hamburger.
+    const handleToggleClick = () => {
+      toggleResponsiveMenu(navbar, toggleButton);
+    };
 
-    menu.addEventListener("click", (event) => {
-      if (event.target.closest("a, button")) {
-        closeResponsiveMenu(navbar, toggleButton);
-      }
-    });
-
-    document.addEventListener("click", (event) => {
-      if (!navbar.classList.contains("navbar--menu-open") || navbar.contains(event.target)) {
+    // Đóng menu sau khi chọn một mục.
+    const handleMenuClick = (event) => {
+      if (event.target.closest("[data-account-toggle]")) {
         return;
       }
 
-      closeResponsiveMenu(navbar, toggleButton);
-    });
-
-    document.addEventListener("keydown", (event) => {
-      if (event.key === "Escape") {
+      if (event.target.closest("a, button")) {
         closeResponsiveMenu(navbar, toggleButton);
       }
-    });
+    };
+
+    // Đóng menu khi bấm ra ngoài navbar.
+    const handleOutsideClick = (event) => {
+      if (navbar.classList.contains("navbar--menu-open") && !navbar.contains(event.target)) {
+        closeResponsiveMenu(navbar, toggleButton);
+      }
+    };
+
+    // Đóng menu bằng phím Escape.
+    const handleMenuKeydown = (event) => {
+      if (event.key === "Escape") {
+        closeResponsiveMenu(navbar, toggleButton);
+        toggleButton.focus();
+      }
+    };
+
+    toggleButton.addEventListener("click", handleToggleClick);
+    menu.addEventListener("click", handleMenuClick);
+    document.addEventListener("click", handleOutsideClick);
+    document.addEventListener("keydown", handleMenuKeydown);
   };
 
-  // Lay ten hien thi cua card de luu vao danh sach yeu thich.
-  const getCardTitle = (card) => {
-    const titleElement = card.querySelector(".card__title, .listing-card__title");
-    return titleElement ? titleElement.textContent.trim() : "Mục yêu thích";
+  // Lấy mã yêu thích đã hardcode trên card.
+  const getFavoriteId = (card) => card.dataset.favoriteId || "";
+
+  // Lấy thông tin dự phòng từ danh sách yêu thích hardcode trong HTML.
+  const getFavoriteFallbackData = (favoriteId) => {
+    const item = document.querySelector(`[data-favorite-item="${favoriteId}"]`);
+    const title = item ? item.querySelector(".favorites-panel__item-title") : null;
+    const type = item ? item.querySelector(".favorites-panel__item-type") : null;
+    const link = item ? item.querySelector(".favorites-panel__item-link") : null;
+
+    return {
+      id: favoriteId,
+      title: title ? title.textContent.trim() : "Mục yêu thích",
+      type: type ? type.textContent.trim() : "",
+      url: link ? link.href : window.location.href,
+    };
   };
 
-  // Xac dinh loai noi dung dang duoc yeu thich.
+  // Đọc danh sách yêu thích và hỗ trợ dữ liệu cũ chỉ lưu mã.
+  const readFavorites = () => {
+    const savedFavorites = readList(favoriteKey);
+    const favorites = [];
+    let needsMigration = false;
+
+    for (const item of savedFavorites) {
+      if (typeof item === "string") {
+        favorites.push(getFavoriteFallbackData(item));
+        needsMigration = true;
+      } else if (item && item.id) {
+        favorites.push(item);
+      }
+    }
+
+    // Chuyển dữ liệu favorite dạng chuỗi của bản trước sang object đầy đủ một lần.
+    if (needsMigration) {
+      saveList(favoriteKey, favorites);
+    }
+
+    return favorites;
+  };
+
+  // Cập nhật số lượng yêu thích trên biểu tượng trái tim.
+  const updateFavoriteBadge = () => {
+    const favoriteCount = readFavorites().length;
+    const badges = document.querySelectorAll("[data-favorite-count]");
+
+    for (const badge of badges) {
+      const favoriteButton = badge.closest("[data-open-favorites]");
+      badge.textContent = favoriteCount > 99 ? "99+" : String(favoriteCount);
+      badge.hidden = favoriteCount === 0;
+      badge.setAttribute("aria-label", `${favoriteCount} mục yêu thích`);
+
+      if (favoriteButton) {
+        favoriteButton.setAttribute(
+          "aria-label",
+          favoriteCount > 0
+            ? `Mở danh sách yêu thích, ${favoriteCount} mục`
+            : "Mở danh sách yêu thích"
+        );
+      }
+    }
+  };
+
+  // Tìm vị trí một mục yêu thích theo mã.
+  const findFavoriteIndex = (favorites, favoriteId) => {
+    for (let index = 0; index < favorites.length; index += 1) {
+      if (favorites[index].id === favoriteId) {
+        return index;
+      }
+    }
+    return -1;
+  };
+
+  // Lấy tiêu đề từ card yêu thích.
+  const getFavoriteTitle = (card) => {
+    const title = card.querySelector(".card__title, .listing-card__title");
+    return title ? title.textContent.trim() : "Mục yêu thích";
+  };
+
+  // Xác định loại nội dung của card yêu thích.
   const getFavoriteType = (card) => {
     if (card.classList.contains("amthuc-card")) {
       return "Ẩm thực";
     }
-
     if (card.classList.contains("luutru-card")) {
       return "Lưu trú";
     }
-
     return "Địa điểm";
   };
 
-  // Tao id don gian de tranh luu trung cung mot dia diem/mon an/luu tru.
-  const getFavoriteId = (card) => {
-    const title = getCardTitle(card).toLowerCase();
-    const source = card.getAttribute("href") || card.dataset.food || title;
-    return `${getFavoriteType(card)}-${source}`;
-  };
-
-  // Luu link day du de bam "Xem" van dung khi mo panel tu trang khac.
+  // Lấy đường dẫn đầy đủ để mục yêu thích mở đúng từ mọi trang.
   const getFavoriteUrl = (card) => {
-    const href = card.getAttribute("href");
-    return href ? new URL(href, window.location.href).href : window.location.href;
+    const link = card.matches("a[href]") ? card : card.querySelector("a[href]");
+    const href = link ? link.getAttribute("href") : window.location.href;
+    return new URL(href, window.location.href).href;
   };
 
-  // Nut trai tim duoc tao bang JS de khong phai lap lai markup tren tung card.
-  const createFavoriteButton = (card) => {
-    const button = document.createElement("button");
-    button.type = "button";
-    button.className = "favorite-button";
-    button.dataset.favoriteButton = "true";
-    button.dataset.favoriteId = getFavoriteId(card);
-    button.setAttribute("aria-label", "Thêm vào yêu thích");
-    button.textContent = "♡";
-    return button;
-  };
+  // Gom đầy đủ thông tin của card trước khi lưu vào localStorage.
+  const getFavoriteData = (card) => ({
+    id: getFavoriteId(card),
+    title: getFavoriteTitle(card),
+    type: getFavoriteType(card),
+    url: getFavoriteUrl(card),
+  });
 
-  // Cap nhat trang thai trai tim dua tren du lieu yeu thich trong localStorage.
+  // Cập nhật hình trái tim theo dữ liệu localStorage.
   const updateFavoriteButton = (button) => {
-    const favorites = readList(favoriteKey);
-    const isActive = favorites.some((item) => item.id === button.dataset.favoriteId);
+    const favorites = readFavorites();
+    const favoriteId = button.dataset.favoriteId;
+    const isActive = findFavoriteIndex(favorites, favoriteId) >= 0;
 
     button.classList.toggle("favorite-button--active", isActive);
     button.textContent = isActive ? "♥" : "♡";
-    button.setAttribute(
-      "aria-label",
-      isActive ? "Bỏ khỏi yêu thích" : "Thêm vào yêu thích"
-    );
+    button.setAttribute("aria-label", isActive ? "Bỏ khỏi yêu thích" : "Thêm vào yêu thích");
   };
 
-  // Them hoac bo mot muc khoi danh sach yeu thich.
+  // Thêm hoặc xóa một mã yêu thích trong localStorage.
   const toggleFavorite = (card, button) => {
     if (!requireLogin()) {
       return;
     }
 
-    const favorites = readList(favoriteKey);
-    const favoriteId = button.dataset.favoriteId;
-    const foundIndex = favorites.findIndex((item) => item.id === favoriteId);
+    const favorites = readFavorites();
+    const favoriteId = getFavoriteId(card);
+    const foundIndex = findFavoriteIndex(favorites, favoriteId);
 
     if (foundIndex >= 0) {
       favorites.splice(foundIndex, 1);
     } else {
-      favorites.push({
-        id: favoriteId,
-        title: getCardTitle(card),
-        type: getFavoriteType(card),
-        url: getFavoriteUrl(card),
-      });
+      favorites.push(getFavoriteData(card));
     }
 
     saveList(favoriteKey, favorites);
     updateFavoriteButton(button);
+    updateFavoriteBadge();
   };
 
-  // Gan nut yeu thich vao cac card co class duoc ho tro.
+  // Gắn sự kiện cho các nút yêu thích đã có sẵn trong HTML.
   const initFavoriteButtons = () => {
-    const cards = document.querySelectorAll(".khampha-card, .amthuc-card, .luutru-card");
+    const buttons = document.querySelectorAll("[data-favorite-button]");
 
-    cards.forEach((card) => {
-      card.classList.add("favorite-card");
+    for (const button of buttons) {
+      const card = button.closest(".khampha-card, .amthuc-card, .luutru-card");
 
-      if (!card.querySelector("[data-favorite-button]")) {
-        card.append(createFavoriteButton(card));
+      if (!card) {
+        continue;
       }
 
-      const button = card.querySelector("[data-favorite-button]");
       updateFavoriteButton(button);
 
-      button.addEventListener("click", (event) => {
+      // Ngăn card điều hướng khi người dùng chỉ bấm nút yêu thích.
+      const handleFavoriteClick = (event) => {
         event.preventDefault();
         event.stopPropagation();
         toggleFavorite(card, button);
-      });
-    });
+      };
+
+      button.addEventListener("click", handleFavoriteClick);
+    }
+
+    updateFavoriteBadge();
   };
 
-  // Tao the text nhanh ma khong dung innerHTML.
-  const createTextElement = (tagName, className, text) => {
-    const element = document.createElement(tagName);
-    element.className = className;
-    element.textContent = text;
-    return element;
+  // Đồng bộ badge nếu favorite thay đổi ở một tab khác.
+  const handleFavoriteStorageChange = (event) => {
+    if (event.key === favoriteKey) {
+      updateFavoriteBadge();
+    }
   };
 
-  // Tao modal/panel yeu thich bang DOM API de giu cay DOM an toan.
-  const createFavoritesDialog = () => {
-    const dialog = document.createElement("div");
-    const content = document.createElement("section");
-    const closeButton = document.createElement("button");
-    const title = createTextElement("h2", "favorites-panel__title", "Yêu thích");
-    const list = document.createElement("div");
-    const emptyText = createTextElement("p", "favorites-panel__empty", "Chưa có mục yêu thích nào.");
+  // Hiển thị các dòng yêu thích đã hardcode trong HTML.
+  const renderFavorites = (panel) => {
+    const favorites = readFavorites();
+    const items = panel.querySelectorAll("[data-favorite-item]");
+    const emptyText = panel.querySelector("[data-favorites-empty]");
+    let visibleCount = 0;
 
-    dialog.className = "modal favorites-panel favorites-panel--hidden";
-    dialog.dataset.favoritesPanel = "true";
+    for (const item of items) {
+      const favoriteIndex = findFavoriteIndex(favorites, item.dataset.favoriteItem);
+      const isVisible = favoriteIndex >= 0;
+      item.hidden = !isVisible;
 
-    content.className = "modal__content favorites-panel__content";
-    closeButton.type = "button";
-    closeButton.className = "modal__close favorites-panel__close";
-    closeButton.setAttribute("aria-label", "Đóng danh sách yêu thích");
-    closeButton.textContent = "×";
-    list.className = "favorites-panel__list";
-    list.dataset.favoritesList = "true";
-    emptyText.dataset.favoritesEmpty = "true";
+      if (isVisible) {
+        const favorite = favorites[favoriteIndex];
+        const title = item.querySelector(".favorites-panel__item-title");
+        const type = item.querySelector(".favorites-panel__item-type");
+        const link = item.querySelector(".favorites-panel__item-link");
 
-    content.append(closeButton, title, emptyText, list);
-    dialog.append(content);
-    document.body.append(dialog);
-
-    closeButton.addEventListener("click", () => {
-      dialog.classList.add("favorites-panel--hidden");
-    });
-
-    dialog.addEventListener("click", (event) => {
-      if (event.target === dialog) {
-        dialog.classList.add("favorites-panel--hidden");
+        // Dữ liệu cũ chỉ có id nên giữ nội dung hardcode làm giá trị dự phòng.
+        if (favorite.title && title) {
+          title.textContent = favorite.title;
+        }
+        if (favorite.type && type) {
+          type.textContent = favorite.type;
+        }
+        if (favorite.url && link) {
+          link.href = favorite.url;
+        }
+        visibleCount += 1;
       }
-    });
+    }
 
-    return dialog;
+    if (emptyText) {
+      emptyText.hidden = visibleCount > 0;
+    }
   };
 
-  // Ve lai danh sach yeu thich moi lan mo panel.
-  const renderFavorites = (dialog) => {
-    const list = dialog.querySelector("[data-favorites-list]");
-    const emptyText = dialog.querySelector("[data-favorites-empty]");
-    const favorites = readList(favoriteKey);
-
-    list.textContent = "";
-    emptyText.hidden = favorites.length > 0;
-
-    favorites.forEach((item) => {
-      const card = document.createElement("article");
-      const title = createTextElement("h3", "favorites-panel__item-title", item.title);
-      const type = createTextElement("p", "favorites-panel__item-type", item.type);
-      const link = document.createElement("a");
-
-      card.className = "favorites-panel__item";
-      link.className = "favorites-panel__item-link";
-      link.href = item.url;
-      link.textContent = "Xem";
-
-      card.append(title, type, link);
-      list.append(card);
-    });
+  // Mở danh sách yêu thích và đưa focus vào nút đóng.
+  const openFavoritesPanel = (panel, trigger) => {
+    favoritePanelTrigger = trigger;
+    renderFavorites(panel);
+    panel.classList.remove("favorites-panel--hidden");
+    document.body.classList.add("modal-open");
+    const closeButton = panel.querySelector("[data-close-favorites]");
+    if (closeButton) {
+      closeButton.focus();
+    }
   };
 
-  // Lang nghe nut Yeu thich tren navbar.
+  // Đóng danh sách yêu thích và trả focus về nút mở.
+  const closeFavoritesPanel = (panel) => {
+    panel.classList.add("favorites-panel--hidden");
+    document.body.classList.remove("modal-open");
+    if (favoritePanelTrigger) {
+      favoritePanelTrigger.focus();
+    }
+  };
+
+  // Quản lý thao tác mở, đóng và phím Tab trong danh sách yêu thích.
   const initFavoritePanel = () => {
-    let dialog = null;
+    const panel = document.querySelector("[data-favorites-panel]");
+    const openButton = document.querySelector("[data-open-favorites]");
+    const closeButton = panel ? panel.querySelector("[data-close-favorites]") : null;
 
-    document.addEventListener("click", (event) => {
-      const button = event.target.closest("[data-open-favorites]");
+    if (!panel || !openButton || !closeButton) {
+      return;
+    }
 
-      if (!button) {
+    // Xử lý mở danh sách yêu thích.
+    const handleOpenFavorites = () => {
+      if (requireLogin()) {
+        openFavoritesPanel(panel, openButton);
+      }
+    };
+
+    // Xử lý đóng danh sách bằng nút đóng.
+    const handleCloseFavorites = () => {
+      closeFavoritesPanel(panel);
+    };
+
+    // Đóng danh sách khi bấm vào lớp nền.
+    const handleFavoriteBackdrop = (event) => {
+      if (event.target === panel) {
+        closeFavoritesPanel(panel);
+      }
+    };
+
+    // Đóng bằng Escape và giữ focus ở trong modal khi bấm Tab.
+    const handleFavoriteKeydown = (event) => {
+      if (panel.classList.contains("favorites-panel--hidden")) {
         return;
       }
 
-      if (!requireLogin()) {
+      if (event.key === "Escape") {
+        closeFavoritesPanel(panel);
         return;
       }
 
-      if (!dialog) {
-        dialog = createFavoritesDialog();
-      }
+      if (event.key === "Tab") {
+        const focusable = panel.querySelectorAll(
+          'button:not([disabled]), [data-favorite-item]:not([hidden]) a[href]'
+        );
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
 
-      renderFavorites(dialog);
-      dialog.classList.remove("favorites-panel--hidden");
-    });
+        if (event.shiftKey && document.activeElement === first) {
+          event.preventDefault();
+          last.focus();
+        } else if (!event.shiftKey && document.activeElement === last) {
+          event.preventDefault();
+          first.focus();
+        }
+      }
+    };
+
+    openButton.addEventListener("click", handleOpenFavorites);
+    closeButton.addEventListener("click", handleCloseFavorites);
+    panel.addEventListener("click", handleFavoriteBackdrop);
+    document.addEventListener("keydown", handleFavoriteKeydown);
   };
 
-  // Nut Hanh trinh se mo panel neu dang o trang lich trinh, hoac chuyen den trang lich trinh.
+  // Điều hướng đến khu vực hành trình khi người dùng đã đăng nhập.
   const initJourneyNavigation = () => {
-    document.addEventListener("click", (event) => {
+    // Xử lý nút mở hành trình.
+    const handleJourneyClick = (event) => {
       const button = event.target.closest("[data-open-journey]");
 
-      if (!button) {
-        return;
-      }
-
-      if (!requireLogin()) {
+      if (!button || !requireLogin()) {
         return;
       }
 
       if (document.querySelector("[data-journey-panel]")) {
         document.dispatchEvent(new CustomEvent("cantho:openJourney"));
-        return;
+      } else {
+        window.location.href = `${getPagePrefix()}lichtrinh/lichtrinh.html#journey`;
       }
+    };
 
-      window.location.href = `${getPagePrefix()}lichtrinh/lichtrinh.html#journey`;
-    });
+    document.addEventListener("click", handleJourneyClick);
   };
 
-  // Nut quay lai dau trang dung chung cho cac trang co data-back-to-top.
+  // Hiện nút quay lại đầu trang khi đã cuộn xuống.
   const initBackToTop = () => {
-    const backToTopButton = document.querySelector("[data-back-to-top]");
+    const button = document.querySelector("[data-back-to-top]");
 
-    if (!backToTopButton) {
+    if (!button) {
       return;
     }
 
+    // Cập nhật trạng thái nút theo vị trí cuộn.
     const toggleBackToTopButton = () => {
-      backToTopButton.classList.toggle(
-        "button--back-to-top-visible",
-        window.scrollY > 240
-      );
+      button.classList.toggle("button--back-to-top-visible", window.scrollY > 240);
     };
 
-    backToTopButton.addEventListener("click", () => {
-      window.scrollTo({
-        top: 0,
-        behavior: "smooth",
-      });
-    });
+    // Cuộn mượt về đầu trang.
+    const scrollBackToTop = () => {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    };
 
+    button.addEventListener("click", scrollBackToTop);
     window.addEventListener("scroll", toggleBackToTopButton, { passive: true });
     toggleBackToTopButton();
   };
 
-  // Cuon muot cho cac link neo trong cung trang.
+  // Cuộn mượt đến liên kết neo trong cùng trang.
   const initSmoothAnchors = () => {
-    document.querySelectorAll('a[href^="#"]').forEach((link) => {
-      link.addEventListener("click", (event) => {
+    const links = document.querySelectorAll('a[href^="#"]');
+
+    for (const link of links) {
+      // Xử lý một liên kết neo hợp lệ trong trang.
+      const handleAnchorClick = (event) => {
         const selector = link.getAttribute("href");
 
         if (!selector || selector === "#") {
@@ -495,35 +647,40 @@
         }
 
         const target = document.querySelector(selector);
-
         if (target) {
           event.preventDefault();
           target.scrollIntoView({ behavior: "smooth" });
         }
-      });
-    });
+      };
+
+      link.addEventListener("click", handleAnchorClick);
+    }
   };
 
-  // Xuat cac ham dung chung de cac file JS rieng cua tung trang co the su dung.
+  // Các hàm dùng chung được đưa ra window để form ở từng trang sử dụng.
   window.CanThoUI = {
+    accountKey,
     clearFormError,
     emailPattern: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
     favoriteKey,
     getCurrentUser,
+    getRegisteredAccount,
     initPasswordToggles,
+    isValidPassword,
     journeyKey,
     readList,
     requireLogin,
     saveList,
+    saveRegisteredAccount,
     setFormError,
     setLoadingState,
     showToast,
   };
 
-  // Khoi tao cac tinh nang chung sau khi file duoc nap.
   initNavbarByLoginState();
   initResponsiveNavbar();
   initFavoriteButtons();
+  window.addEventListener("storage", handleFavoriteStorageChange);
   initFavoritePanel();
   initJourneyNavigation();
   initBackToTop();
